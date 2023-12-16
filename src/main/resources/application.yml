@@ -14,3 +14,15 @@ spring:
         show_sql: true
     database: mysql
     defer-datasource-initialization: true
+
+  mail:
+    host: smtp.gmail.com
+    port: 587   #587
+    username: gxxk76@gmail.com
+    password: qtjkzfkliaofogue
+    properties:
+      mail:
+        smtp:
+          auth: true
+          starttls:
+            enable: true
