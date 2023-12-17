@@ -1,4 +1,4 @@
-package com.community.amkorea.global.dto;
+package com.community.amkorea.global.entity;
 
 import jakarta.persistence.EntityListeners;
 import jakarta.persistence.MappedSuperclass;
