@@ -4,6 +4,7 @@ import com.community.amkorea.auth.dto.SignInDto;
 import com.community.amkorea.auth.dto.SignUpDto;
 import com.community.amkorea.auth.service.AuthService;
 import com.community.amkorea.global.Util.Mail.dto.SendMailRequest;
+import com.community.amkorea.global.Util.Mail.dto.VerifyMailRequest;
 import com.community.amkorea.global.Util.Mail.service.MailService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -32,11 +33,16 @@ public class AuthController {
     return ResponseEntity.status(HttpStatus.OK).build();
   }
 
-  @PostMapping("/signUp/certification")
-  public ResponseEntity<?> sendSignupCertificationMail(
-      @RequestBody SendMailRequest request
-  ) {
-    mailService.sendAuthMail(request.getEmail());
-    return ResponseEntity.status(HttpStatus.CREATED).body("인증 코드를 발송했습니다.");
+  @PostMapping("/mail/certification")
+  public ResponseEntity<?> sendCertificationMail(@RequestBody SendMailRequest request) {
+    return ResponseEntity.status(HttpStatus.CREATED)
+        .body(mailService.sendAuthMail(request.getEmail()));
   }
+
+  @PostMapping("/mail/verify")
+  public ResponseEntity<?> sendVerifyMail(@RequestBody VerifyMailRequest request) {
+    mailService.verifyEmail(request.getEmail(), request.getCode());
+    return ResponseEntity.status(HttpStatus.OK).build();
+  }
+
 }

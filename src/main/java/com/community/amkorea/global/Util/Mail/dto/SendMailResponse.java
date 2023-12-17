@@ -1,7 +1,5 @@
 package com.community.amkorea.global.Util.Mail.dto;
 
-import jakarta.validation.constraints.Email;
-import jakarta.validation.constraints.NotBlank;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -13,9 +11,7 @@ import lombok.Setter;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class SendMailRequest {
-
-  @NotBlank(message = "이메일 입력은 필수입니다.")
-  @Email(message = "이메일 형식에 맞게 입력해주세요")
+public class SendMailResponse {
   private String email;
+  private String code;
 }

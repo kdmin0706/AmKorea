@@ -1,5 +1,14 @@
 package com.community.amkorea.global.Util.Mail.service;
 
+import static com.community.amkorea.global.exception.ErrorCode.EMAIL_NOT_FOUND;
+import static com.community.amkorea.global.exception.ErrorCode.INVALID_AUTH_CODE;
+import static com.community.amkorea.global.exception.ErrorCode.USER_NOT_FOUND;
+
+import com.community.amkorea.global.Util.Mail.dto.SendMailResponse;
+import com.community.amkorea.global.exception.CustomException;
+import com.community.amkorea.global.service.RedisService;
+import com.community.amkorea.member.entity.Member;
+import com.community.amkorea.member.repository.MemberRepository;
 import jakarta.mail.MessagingException;
 import jakarta.mail.internet.MimeMessage;
 import java.util.Random;
@@ -14,11 +23,16 @@ import org.springframework.stereotype.Service;
 @RequiredArgsConstructor
 public class MailService {
   private final JavaMailSender javaMailSender;
+  private final RedisService redisService;
+  private final MemberRepository memberRepository;
 
   private static final int CODE_LENGTH = 6;
 
-  public void sendAuthMail(String email) {
-    String authKey = createRandomCode();
+  //이메일 토큰 만료 기간 10분으로 설정
+  private static final Long EMAIL_TOKEN_EXPIRATION = 600000L;
+
+  public SendMailResponse sendAuthMail(String email) {
+    String code = createRandomCode();
 
     MimeMessage mimeMessage = javaMailSender.createMimeMessage();
     MimeMessageHelper mimeMessageHelper = new MimeMessageHelper(mimeMessage, "utf-8");
@@ -37,7 +51,7 @@ public class MailService {
           + "<div align='center' style='border:1px solid black; font-family:verdana';>"
           + "<h3 style='color:blue;'>회원가입 인증 코드입니다.</h3>"
           + "<div style='font-size:130%'>"
-          + "CODE : <strong>" + authKey + "</strong><div><br/> "
+          + "CODE : <strong>" + code + "</strong><div><br/> "
           + "</div>";
       
       mimeMessageHelper.setText(msgCode, true); // 메일 본문 내용, HTML 여부
@@ -47,8 +61,40 @@ public class MailService {
       throw new RuntimeException(e);
     }
 
-    javaMailSender.send(mimeMessage);
+   javaMailSender.send(mimeMessage);
+
+    redisService.setDataExpire(email, code, EMAIL_TOKEN_EXPIRATION);
+
+    return SendMailResponse.builder()
+        .email(email)
+        .code(code)
+        .build();
   }
+
+  public void verifyEmail(String email, String code) {
+    if (!isVerify(email, code)) {
+      throw new CustomException(INVALID_AUTH_CODE);
+    }
+
+    //멤버 이메일 인증 여부 변경
+    Member member = memberRepository.findByEmail(email)
+        .orElseThrow(() -> new CustomException(USER_NOT_FOUND));
+    member.changeEmailAuth();
+    memberRepository.save(member);
+
+    redisService.deleteData(email);
+  }
+
+  private boolean isVerify(String email, String code) {
+    boolean existed = redisService.existData(email);
+    if (!existed) {
+      throw new CustomException(EMAIL_NOT_FOUND);
+    }
+
+    String data = redisService.getData(email);
+    return data.equals(code);
+  }
+
 
   private String createRandomCode() {
     Random random = new Random();
@@ -60,5 +106,4 @@ public class MailService {
 
     return buffer.toString();
   }
-
 }

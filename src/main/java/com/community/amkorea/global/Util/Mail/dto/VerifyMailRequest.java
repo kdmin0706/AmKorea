@@ -13,9 +13,13 @@ import lombok.Setter;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class SendMailRequest {
+public class VerifyMailRequest {
 
   @NotBlank(message = "이메일 입력은 필수입니다.")
   @Email(message = "이메일 형식에 맞게 입력해주세요")
   private String email;
+
+  @NotBlank(message = "인증번호를 맞게 입력해주세요")
+  private String code;
+
 }
