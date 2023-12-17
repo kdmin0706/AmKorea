@@ -1,6 +1,6 @@
 package com.community.amkorea.member.entity;
 
-import com.community.amkorea.global.dto.BaseEntity;
+import com.community.amkorea.global.entity.BaseEntity;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -34,4 +34,11 @@ public class Member extends BaseEntity {
 
   @Column(nullable = false)
   private String phoneNumber;
+
+  @Builder.Default
+  private boolean emailAuth = false;
+
+  public void changeEmailAuth() {
+    this.emailAuth = true;
+  }
 }
