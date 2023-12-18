@@ -1,0 +1,36 @@
+### 회원가입
+POST http://localhost:8080/auth/signUp
+Content-Type: application/json
+
+{
+  "email": "rudeka0706@gmail.com",
+  "password": "12345",
+  "nickname": "korea",
+  "phoneNumber": "010-1234-5678"
+}
+
+### 로그인
+POST http://localhost:8080/auth/signIn
+Content-Type: application/json
+
+{
+  "email": "test2@test.com",
+  "password": "12345"
+}
+
+### 이메일 인증
+POST http://localhost:8080/auth/mail/certification
+Content-Type: application/json
+
+{
+  "email": "rudeka0706@naver.com"
+}
+
+### 이메일 검증
+POST http://localhost:8080/auth/mail/verify
+Content-Type: application/json
+
+{
+  "email": "rudeka0706@naver.com",
+  "code": "752733"
+}

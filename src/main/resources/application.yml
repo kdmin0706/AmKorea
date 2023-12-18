@@ -1,0 +1,33 @@
+spring:
+  datasource:
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    url: jdbc:mysql://localhost:3306/project?characterEncoding=UTF-8&serverTimezone=Asia/Seoul
+    username: root
+    password: 1234
+
+  jpa:
+    hibernate:
+      ddl-auto: update    # create, create_drop update
+    properties:
+      hibernate:
+        format_sql: true
+        show_sql: true
+    database: mysql
+    defer-datasource-initialization: true
+
+  mail:
+    host: smtp.gmail.com
+    port: 587   #587
+    username: gxxk76@gmail.com
+    password: qtjkzfkliaofogue
+    properties:
+      mail:
+        smtp:
+          auth: true
+          starttls:
+            enable: true
+
+  data:
+    redis:
+      host: localhost
+      port: 6379
