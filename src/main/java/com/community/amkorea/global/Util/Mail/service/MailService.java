@@ -6,6 +6,7 @@ import static com.community.amkorea.global.exception.ErrorCode.USER_NOT_FOUND;
 
 import com.community.amkorea.global.Util.Mail.dto.SendMailResponse;
 import com.community.amkorea.global.exception.CustomException;
+import com.community.amkorea.global.exception.ErrorCode;
 import com.community.amkorea.global.service.RedisService;
 import com.community.amkorea.member.entity.Member;
 import com.community.amkorea.member.repository.MemberRepository;
@@ -17,6 +18,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 @Slf4j
 @Service
@@ -30,6 +32,8 @@ public class MailService {
 
   //이메일 토큰 만료 기간 10분으로 설정
   private static final Long EMAIL_TOKEN_EXPIRATION = 600000L;
+
+  private static final String EMAIL_PREFIX = "Email-Auth: ";
 
   public SendMailResponse sendAuthMail(String email) {
     String code = createRandomCode();
@@ -58,12 +62,12 @@ public class MailService {
 
     } catch (MessagingException e) {
       log.info("fail");
-      throw new RuntimeException(e);
+      throw new CustomException(ErrorCode.INTERNAL_SERVER_ERROR);
     }
 
-   javaMailSender.send(mimeMessage);
+    javaMailSender.send(mimeMessage);
 
-    redisService.setDataExpire(email, code, EMAIL_TOKEN_EXPIRATION);
+    redisService.setDataExpire(EMAIL_PREFIX + email, code, EMAIL_TOKEN_EXPIRATION);
 
     return SendMailResponse.builder()
         .email(email)
@@ -71,6 +75,7 @@ public class MailService {
         .build();
   }
 
+  @Transactional
   public void verifyEmail(String email, String code) {
     if (!isVerify(email, code)) {
       throw new CustomException(INVALID_AUTH_CODE);
@@ -86,12 +91,11 @@ public class MailService {
   }
 
   private boolean isVerify(String email, String code) {
-    boolean existed = redisService.existData(email);
-    if (!existed) {
+    String data = redisService.getData(EMAIL_PREFIX + email);
+    if (data == null) {
       throw new CustomException(EMAIL_NOT_FOUND);
     }
 
-    String data = redisService.getData(email);
     return data.equals(code);
   }
 
