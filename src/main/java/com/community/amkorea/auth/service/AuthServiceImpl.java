@@ -21,16 +21,13 @@ public class AuthServiceImpl implements AuthService {
 
   @Override
   public SignUpDto signUp(SignUpDto request) {
-    boolean exists = memberRepository.existsByEmail(request.getEmail());
-    if (exists) {
+    if (memberRepository.existsByEmail(request.getEmail())) {
       throw new CustomException(ErrorCode.DUPLICATE_USER);
     }
 
-    request.setPassword(passwordEncoder.encode(request.getPassword()));
-
     Member savedMember = memberRepository.save(Member.builder()
             .email(request.getEmail())
-            .password(request.getPassword())
+            .password(passwordEncoder.encode(request.getPassword()))
             .phoneNumber(request.getPhoneNumber())
             .nickname(request.getNickname())
             .build());
