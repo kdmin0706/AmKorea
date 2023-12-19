@@ -15,7 +15,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
-@RequestMapping("/auth")
+@RequestMapping("/api/auth")
 @RequiredArgsConstructor
 public class AuthController {
 
@@ -29,8 +29,7 @@ public class AuthController {
 
   @PostMapping("/signIn")
   public ResponseEntity<?> signInMember(@RequestBody SignInDto request) {
-    memberService.signIn(request);
-    return ResponseEntity.status(HttpStatus.OK).build();
+    return ResponseEntity.ok(memberService.signIn(request));
   }
 
   @PostMapping("/mail/certification")
