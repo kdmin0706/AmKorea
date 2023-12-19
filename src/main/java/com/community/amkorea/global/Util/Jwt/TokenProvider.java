@@ -1,5 +1,6 @@
 package com.community.amkorea.global.Util.Jwt;
 
+import com.community.amkorea.global.Util.Jwt.dto.TokenDto;
 import com.community.amkorea.member.entity.Member;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.ExpiredJwtException;

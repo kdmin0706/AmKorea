@@ -5,7 +5,7 @@ import static com.community.amkorea.global.exception.ErrorCode.PASSWORD_NOT_MATC
 
 import com.community.amkorea.auth.dto.SignInDto;
 import com.community.amkorea.auth.dto.SignUpDto;
-import com.community.amkorea.global.Util.Jwt.TokenDto;
+import com.community.amkorea.global.Util.Jwt.dto.TokenDto;
 import com.community.amkorea.global.Util.Jwt.TokenProvider;
 import com.community.amkorea.global.exception.CustomException;
 import com.community.amkorea.global.exception.ErrorCode;

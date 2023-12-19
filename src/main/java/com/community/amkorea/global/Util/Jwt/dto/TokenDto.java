@@ -1,4 +1,4 @@
-package com.community.amkorea.global.Util.Jwt;
+package com.community.amkorea.global.Util.Jwt.dto;
 
 import lombok.Builder;
 import lombok.Data;
