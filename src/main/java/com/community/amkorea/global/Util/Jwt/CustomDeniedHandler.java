@@ -7,6 +7,7 @@ import jakarta.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.web.access.AccessDeniedHandler;
@@ -14,7 +15,10 @@ import org.springframework.stereotype.Component;
 
 @Slf4j
 @Component
+@RequiredArgsConstructor
 public class CustomDeniedHandler implements AccessDeniedHandler {
+
+  private final ObjectMapper objectMapper;
 
   /**
    * 권한에 맞지 않은 요청에 대한 exception
@@ -29,8 +33,6 @@ public class CustomDeniedHandler implements AccessDeniedHandler {
    * 한글 출력을 위해 getWriter() 사용
    */
   private void setResponse(HttpServletResponse response) throws IOException {
-
-    ObjectMapper objectMapper = new ObjectMapper();
     Map<String, Object> map = new HashMap<>();
 
     map.put("errorCode", ErrorCode.UNAUTHORIZED);
@@ -39,6 +41,6 @@ public class CustomDeniedHandler implements AccessDeniedHandler {
     response.setContentType("application/json;charset=UTF-8");
     response.setStatus(ErrorCode.UNAUTHORIZED.getHttpStatus().value());
 
-    response.getWriter().print(objectMapper.writeValueAsString(map));
+    response.getWriter().print(this.objectMapper.writeValueAsString(map));
   }
 }
