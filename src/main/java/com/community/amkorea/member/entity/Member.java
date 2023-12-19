@@ -1,8 +1,11 @@
 package com.community.amkorea.member.entity;
 
 import com.community.amkorea.global.entity.BaseEntity;
+import com.community.amkorea.member.entity.enums.RoleType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
@@ -37,6 +40,10 @@ public class Member extends BaseEntity {
 
   @Builder.Default
   private boolean emailAuth = false;
+
+  @Enumerated(EnumType.STRING)
+  @Column(nullable = false)
+  private RoleType roleType;
 
   public void changeEmailAuth() {
     this.emailAuth = true;

@@ -2,10 +2,11 @@ package com.community.amkorea.auth.service;
 
 import com.community.amkorea.auth.dto.SignInDto;
 import com.community.amkorea.auth.dto.SignUpDto;
+import com.community.amkorea.global.Util.Jwt.dto.TokenDto;
 
 public interface AuthService {
 
   SignUpDto signUp(SignUpDto request);
 
-  void signIn(SignInDto request);
+  TokenDto signIn(SignInDto request);
 }
