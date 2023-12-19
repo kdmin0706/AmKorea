@@ -1,5 +1,6 @@
 package com.community.amkorea.global.Util.Jwt;
 
+import com.community.amkorea.global.Util.Jwt.dto.CustomUserDto;
 import com.community.amkorea.global.exception.CustomException;
 import com.community.amkorea.global.exception.ErrorCode;
 import com.community.amkorea.member.entity.Member;
@@ -21,6 +22,6 @@ public class CustomUserDetailService implements UserDetailsService {
     Member member = memberRepository.findByEmail(email)
         .orElseThrow(() -> new CustomException(ErrorCode.USER_NOT_FOUND));
 
-    return new CustomUserDetails(member);
+    return new CustomUserDetails(CustomUserDto.fromEntity(member));
   }
 }

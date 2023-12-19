@@ -1,28 +1,28 @@
 package com.community.amkorea.global.Util.Jwt;
 
-import com.community.amkorea.member.entity.Member;
+import com.community.amkorea.global.Util.Jwt.dto.CustomUserDto;
 import java.util.ArrayList;
 import java.util.Collection;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
-public record CustomUserDetails(Member member) implements UserDetails {
+public record CustomUserDetails(CustomUserDto memberDto) implements UserDetails {
 
   @Override
   public Collection<? extends GrantedAuthority> getAuthorities() {
     Collection<GrantedAuthority> authorities = new ArrayList<>();
-    authorities.add(() -> member.getRoleType().getCode());
+    authorities.add(memberDto::getRoleType);
     return authorities;
   }
 
   @Override
   public String getPassword() {
-    return member.getPassword();
+    return memberDto.getPassword();
   }
 
   @Override
   public String getUsername() {
-    return member.getEmail();
+    return memberDto.getEmail();
   }
 
   @Override
