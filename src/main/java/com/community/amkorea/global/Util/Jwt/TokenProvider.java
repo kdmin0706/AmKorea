@@ -48,12 +48,15 @@ public class TokenProvider {
   public TokenDto generateToken(Member member) {
     Date now = new Date();
 
+    Date accessTokenExpireTime = getTokenExpire(now, accessTokenExpiration);
+    Date refreshTokenExpireTime = getTokenExpire(now, refreshTokenExpiration);
+
     String accessToken = Jwts.builder()
         .setIssuedAt(now)
         .setSubject("access-token")
         .claim("role", member.getRoleType())
         .claim("userId", member.getEmail())
-        .setExpiration(new Date(now.getTime() + accessTokenExpiration))
+        .setExpiration(accessTokenExpireTime)
         .signWith(getSigningKey(), SignatureAlgorithm.HS256)
         .compact();
 
@@ -62,11 +65,16 @@ public class TokenProvider {
         .setSubject("refresh-token")
         .claim("role", member.getRoleType())
         .claim("userId", member.getEmail())
-        .setExpiration(new Date(now.getTime() + refreshTokenExpiration))
+        .setExpiration(refreshTokenExpireTime)
         .signWith(getSigningKey(), SignatureAlgorithm.HS256)
         .compact();
 
-    return TokenDto.of(accessToken, refreshToken);
+    return TokenDto.builder()
+        .accessToken(accessToken)
+        .refreshToken(refreshToken)
+        .accessTokenExpireTime(accessTokenExpireTime.getTime())
+        .refreshTokenExpireTime(refreshTokenExpireTime.getTime())
+        .build();
   }
 
   /**
@@ -122,5 +130,10 @@ public class TokenProvider {
     return new UsernamePasswordAuthenticationToken(customUserDetails.getUsername(),
         "", customUserDetails.getAuthorities());
   }
+
+  private Date getTokenExpire(Date date, long expireTime) {
+    return new Date(date.getTime() + expireTime);
+  }
+
 }
 
