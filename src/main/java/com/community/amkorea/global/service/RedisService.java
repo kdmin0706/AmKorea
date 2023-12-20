@@ -1,6 +1,6 @@
 package com.community.amkorea.global.service;
 
-import java.time.Duration;
+import java.util.concurrent.TimeUnit;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.data.redis.core.ValueOperations;
@@ -18,7 +18,7 @@ public class RedisService {
 
   public void setDataExpire(String key, String value, Long expiredTime) {
     ValueOperations<String, Object> valueOperations = redisTemplate.opsForValue();
-    valueOperations.set(key, value, Duration.ofMillis(expiredTime));
+    valueOperations.set(key, value, expiredTime, TimeUnit.MILLISECONDS);
   }
 
   public boolean existData(String key) {
