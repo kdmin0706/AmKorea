@@ -9,6 +9,7 @@ import com.community.amkorea.global.Util.Jwt.dto.TokenDto;
 import com.community.amkorea.global.Util.Jwt.TokenProvider;
 import com.community.amkorea.global.exception.CustomException;
 import com.community.amkorea.global.exception.ErrorCode;
+import com.community.amkorea.global.service.RedisService;
 import com.community.amkorea.member.entity.Member;
 import com.community.amkorea.member.entity.enums.RoleType;
 import com.community.amkorea.member.repository.MemberRepository;
@@ -24,6 +25,10 @@ public class AuthServiceImpl implements AuthService {
   private final MemberRepository memberRepository;
 
   private final TokenProvider tokenProvider;
+  private final RedisService redisService;
+  private static final String REFRESH_TOKEN_PREFIX = "RT: ";
+  public static final long ACCESS_TOKEN_TTL = (1000 * 60) * 30; // 30분
+  public static final long REFRESH_TOKEN_TTL = (60 * 1000) * 60 * 24 * 5; // 5일
 
   @Override
   public SignUpDto signUp(SignUpDto request) {
@@ -53,6 +58,18 @@ public class AuthServiceImpl implements AuthService {
     if (!member.isEmailAuth()) {
       throw new CustomException(EMAIL_NOT_VERITY);
     }
-    return tokenProvider.generateToken(member);
+
+    return this.checkToken(member);
   }
+
+  private TokenDto checkToken(Member member) {
+    TokenDto tokenDto = tokenProvider.generateToken(member);
+    saveRefreshToken(REFRESH_TOKEN_PREFIX + member.getEmail(), tokenDto.getRefreshToken());
+    return tokenDto;
+  }
+
+  private void saveRefreshToken(String key, String refreshToken) {
+    redisService.setDataExpire(key, refreshToken, REFRESH_TOKEN_TTL);
+  }
+
 }
