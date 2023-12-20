@@ -34,3 +34,13 @@ Content-Type: application/json
   "email": "rudeka0706@naver.com",
   "code": "752733"
 }
+
+### 로그아웃
+POST http://localhost:8080/api/auth/logout
+Content-Type: application/json
+
+{
+  "accessToken": "eyJhbGciOiJIUzI1NiJ9.eyJpYXQiOjE3MDMwNzY1OTcsInN1YiI6ImFjY2Vzcy10b2tlbiIsInJvbGUiOiJVU0VSIiwidXNlcklkIjoidGVzdDJAdGVzdC5jb20iLCJleHAiOjE3MDMwNzgzOTd9.WV2yp7VmCEvYQZH0nzRGQrrnX0Ykwd0Ohy0aizoOBII"
+}
+
+

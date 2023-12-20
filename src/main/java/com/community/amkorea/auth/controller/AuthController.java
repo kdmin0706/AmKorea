@@ -1,5 +1,6 @@
 package com.community.amkorea.auth.controller;
 
+import com.community.amkorea.auth.dto.LogoutDto;
 import com.community.amkorea.auth.dto.SignInDto;
 import com.community.amkorea.auth.dto.SignUpDto;
 import com.community.amkorea.auth.service.AuthService;
@@ -44,4 +45,9 @@ public class AuthController {
     return ResponseEntity.status(HttpStatus.OK).build();
   }
 
+  @PostMapping("/logout")
+  public ResponseEntity<?> LogoutMember(@RequestBody LogoutDto request) {
+    memberService.Logout(request);
+    return ResponseEntity.status(HttpStatus.OK).build();
+  }
 }
