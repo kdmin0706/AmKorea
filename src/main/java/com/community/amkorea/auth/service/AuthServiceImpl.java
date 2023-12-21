@@ -62,37 +62,40 @@ public class AuthServiceImpl implements AuthService {
       throw new CustomException(EMAIL_NOT_VERITY);
     }
 
-    return this.checkToken(member);
+    return generateToken(member.getEmail(), member.getRoleType().getCode());
   }
 
   @Override
   @Transactional
-  public void Logout(LogoutDto request) {
+  public void logout(LogoutDto request) {
     //1. 토큰 유효성 검증
     if (!tokenProvider.validateToken(request.getAccessToken())) {
       throw new CustomException(ErrorCode.INVALID_TOKEN);
     }
 
-    //2. access-token 이용한 user 정보 찾기
-    Authentication authentication = tokenProvider.getAuthentication(request.getAccessToken());
-
-    //3. redis 에서 해당 유저 정보로 저장된 refresh-token 확인
-    String rtToken = REFRESH_TOKEN_PREFIX + authentication.getPrincipal().toString();
-    if (redisService.existData(rtToken)) {
-      log.info("Refresh-Token 삭제");
-      redisService.deleteData(rtToken);
+    //2. redis 에서 해당 access-token 정보로 저장된 refresh-token 확인
+    if (redisService.getData(request.getAccessToken()) != null) {
+      redisService.deleteData(request.getAccessToken());
     }
 
-    //4. access-token 유효시간 확인 후에 BlackList 저장
+    //3. access-token 유효시간 확인 후에 BlackList 저장
     Long expireTime = tokenProvider.getExpireTime(request.getAccessToken());
     redisService.setDataExpire(request.getAccessToken(), "Logout", expireTime);
   }
 
-  private TokenDto checkToken(Member member) {
-    TokenDto tokenDto = tokenProvider.generateToken(member);
-    redisService.setDataExpire(REFRESH_TOKEN_PREFIX + member.getEmail(),
+  private TokenDto generateToken(String email, String roleType) {
+    TokenDto tokenDto = tokenProvider.generateToken(email, roleType);
+    redisService.setDataExpire(tokenDto.getAccessToken(),
         tokenDto.getRefreshToken(), tokenDto.getRefreshTokenExpireTime());
     return tokenDto;
   }
 
+
+  /**
+   * 권한 확인
+   */
+  private String getAuthorities(Authentication authentication) {
+    return authentication.getAuthorities().stream()
+        .map(GrantedAuthority::getAuthority).collect(Collectors.joining());
+  }
 }

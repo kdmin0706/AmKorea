@@ -20,17 +20,17 @@ import org.springframework.web.bind.annotation.RestController;
 @RequiredArgsConstructor
 public class AuthController {
 
-  private final AuthService memberService;
+  private final AuthService authService;
   private final MailService mailService;
 
   @PostMapping("/signUp")
   public ResponseEntity<?> signUpMember(@RequestBody SignUpDto request) {
-    return ResponseEntity.status(HttpStatus.CREATED).body(memberService.signUp(request));
+    return ResponseEntity.status(HttpStatus.CREATED).body(authService.signUp(request));
   }
 
   @PostMapping("/signIn")
   public ResponseEntity<?> signInMember(@RequestBody SignInDto request) {
-    return ResponseEntity.ok(memberService.signIn(request));
+    return ResponseEntity.ok(authService.signIn(request));
   }
 
   @PostMapping("/mail/certification")
@@ -46,8 +46,8 @@ public class AuthController {
   }
 
   @PostMapping("/logout")
-  public ResponseEntity<?> LogoutMember(@RequestBody LogoutDto request) {
-    memberService.Logout(request);
+  public ResponseEntity<?> logoutMember(@RequestBody LogoutDto request) {
+    authService.logout(request);
     return ResponseEntity.status(HttpStatus.OK).build();
   }
 }

@@ -45,7 +45,7 @@ public class TokenProvider {
 
   private final CustomUserDetailService customUserDetailService;
 
-  public TokenDto generateToken(Member member) {
+  public TokenDto generateToken(String email, String roleType) {
     Date now = new Date();
 
     Date accessTokenExpireTime = new Date(now.getTime() + accessTokenExpiration);
@@ -54,8 +54,8 @@ public class TokenProvider {
     String accessToken = Jwts.builder()
         .setIssuedAt(now)
         .setSubject("access-token")
-        .claim("role", member.getRoleType())
-        .claim("userId", member.getEmail())
+        .claim("role", roleType)
+        .claim("userId", email)
         .setExpiration(accessTokenExpireTime)
         .signWith(getSigningKey(), SignatureAlgorithm.HS256)
         .compact();
@@ -63,8 +63,8 @@ public class TokenProvider {
     String refreshToken = Jwts.builder()
         .setIssuedAt(now)
         .setSubject("refresh-token")
-        .claim("role", member.getRoleType())
-        .claim("userId", member.getEmail())
+        .claim("role", roleType)
+        .claim("userId", email)
         .setExpiration(refreshTokenExpireTime)
         .signWith(getSigningKey(), SignatureAlgorithm.HS256)
         .compact();

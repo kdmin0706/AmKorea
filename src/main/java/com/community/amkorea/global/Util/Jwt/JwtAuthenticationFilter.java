@@ -9,6 +9,7 @@ import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import java.util.Objects;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.core.Authentication;
@@ -34,7 +35,8 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
     try {
       if (StringUtils.hasText(token) && tokenProvider.validateToken(token)) {
         //access-token 로그아웃 여부 확인
-        if (redisService.getData(token).isEmpty()) {
+        if (redisService.getData(token) != null
+            && !Objects.equals(redisService.getData(token),"Logout")) {
           Authentication authentication = tokenProvider.getAuthentication(token);
           SecurityContextHolder.getContext().setAuthentication(authentication);
         }
