@@ -82,6 +82,10 @@ public class AuthServiceImpl implements AuthService {
       log.info("Refresh-Token 삭제");
       redisService.deleteData(rtToken);
     }
+
+    //4. access-token 유효시간 확인 후에 BlackList 저장
+    Long expireTime = tokenProvider.getExpireTime(request.getAccessToken());
+    redisService.setDataExpire(request.getAccessToken(), "Logout", expireTime);
   }
 
   private TokenDto checkToken(Member member) {

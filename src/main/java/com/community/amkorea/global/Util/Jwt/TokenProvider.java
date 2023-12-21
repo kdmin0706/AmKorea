@@ -48,8 +48,8 @@ public class TokenProvider {
   public TokenDto generateToken(Member member) {
     Date now = new Date();
 
-    Date accessTokenExpireTime = getTokenExpire(now, accessTokenExpiration);
-    Date refreshTokenExpireTime = getTokenExpire(now, refreshTokenExpiration);
+    Date accessTokenExpireTime = new Date(now.getTime() + accessTokenExpiration);
+    Date refreshTokenExpireTime = new Date(now.getTime() + refreshTokenExpiration);
 
     String accessToken = Jwts.builder()
         .setIssuedAt(now)
@@ -131,9 +131,8 @@ public class TokenProvider {
         "", customUserDetails.getAuthorities());
   }
 
-  private Date getTokenExpire(Date date, long expireTime) {
-    return new Date(date.getTime() + expireTime);
+  public Long getExpireTime(String token) {
+    return this.parseClaims(token).getExpiration().getTime();
   }
-
 }
 

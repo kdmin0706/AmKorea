@@ -1,5 +1,6 @@
 package com.community.amkorea.global.Util.Jwt;
 import com.community.amkorea.global.exception.ErrorCode;
+import com.community.amkorea.global.service.RedisService;
 import io.jsonwebtoken.ExpiredJwtException;
 import io.jsonwebtoken.MalformedJwtException;
 import io.jsonwebtoken.UnsupportedJwtException;
@@ -22,6 +23,8 @@ import org.springframework.web.filter.OncePerRequestFilter;
 public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
   private final TokenProvider tokenProvider;
+  private final RedisService redisService;
+
   @Override
   protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response,
       FilterChain filterChain) throws ServletException, IOException {
@@ -30,8 +33,11 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
     try {
       if (StringUtils.hasText(token) && tokenProvider.validateToken(token)) {
-        Authentication authentication = tokenProvider.getAuthentication(token);
-        SecurityContextHolder.getContext().setAuthentication(authentication);
+        //access-token 로그아웃 여부 확인
+        if (redisService.getData(token).isEmpty()) {
+          Authentication authentication = tokenProvider.getAuthentication(token);
+          SecurityContextHolder.getContext().setAuthentication(authentication);
+        }
       }
     } catch (SecurityException | MalformedJwtException e) {
       request.setAttribute("exception", ErrorCode.INVALID_TOKEN);
