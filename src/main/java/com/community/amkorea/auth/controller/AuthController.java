@@ -7,6 +7,7 @@ import com.community.amkorea.auth.service.AuthService;
 import com.community.amkorea.global.Util.Mail.dto.SendMailRequest;
 import com.community.amkorea.global.Util.Mail.dto.VerifyMailRequest;
 import com.community.amkorea.global.Util.Mail.service.MailService;
+import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -50,4 +51,10 @@ public class AuthController {
     authService.logout(request);
     return ResponseEntity.status(HttpStatus.OK).build();
   }
+
+  @PostMapping("/reissue-token")
+  public ResponseEntity<?> reissue_token(HttpServletRequest httpServletRequest) {
+    return ResponseEntity.ok(authService.reissue(httpServletRequest));
+  }
+
 }
