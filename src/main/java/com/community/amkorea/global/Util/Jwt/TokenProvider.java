@@ -1,7 +1,6 @@
 package com.community.amkorea.global.Util.Jwt;
 
 import com.community.amkorea.global.Util.Jwt.dto.TokenDto;
-import com.community.amkorea.member.entity.Member;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.ExpiredJwtException;
 import io.jsonwebtoken.Jwts;
@@ -45,28 +44,36 @@ public class TokenProvider {
 
   private final CustomUserDetailService customUserDetailService;
 
-  public TokenDto generateToken(Member member) {
+  public TokenDto generateToken(String email, String roleType) {
     Date now = new Date();
+
+    Date accessTokenExpireTime = new Date(now.getTime() + accessTokenExpiration);
+    Date refreshTokenExpireTime = new Date(now.getTime() + refreshTokenExpiration);
 
     String accessToken = Jwts.builder()
         .setIssuedAt(now)
         .setSubject("access-token")
-        .claim("role", member.getRoleType())
-        .claim("userId", member.getEmail())
-        .setExpiration(new Date(now.getTime() + accessTokenExpiration))
+        .claim("role", roleType)
+        .claim("userId", email)
+        .setExpiration(accessTokenExpireTime)
         .signWith(getSigningKey(), SignatureAlgorithm.HS256)
         .compact();
 
     String refreshToken = Jwts.builder()
         .setIssuedAt(now)
         .setSubject("refresh-token")
-        .claim("role", member.getRoleType())
-        .claim("userId", member.getEmail())
-        .setExpiration(new Date(now.getTime() + refreshTokenExpiration))
+        .claim("role", roleType)
+        .claim("userId", email)
+        .setExpiration(refreshTokenExpireTime)
         .signWith(getSigningKey(), SignatureAlgorithm.HS256)
         .compact();
 
-    return TokenDto.of(accessToken, refreshToken);
+    return TokenDto.builder()
+        .accessToken(accessToken)
+        .refreshToken(refreshToken)
+        .accessTokenExpireTime(accessTokenExpireTime.getTime())
+        .refreshTokenExpireTime(refreshTokenExpireTime.getTime())
+        .build();
   }
 
   /**
@@ -121,6 +128,10 @@ public class TokenProvider {
 
     return new UsernamePasswordAuthenticationToken(customUserDetails.getUsername(),
         "", customUserDetails.getAuthorities());
+  }
+
+  public Long getExpireTime(String token) {
+    return this.parseClaims(token).getExpiration().getTime();
   }
 }
 

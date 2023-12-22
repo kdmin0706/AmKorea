@@ -8,10 +8,12 @@ import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
+import com.community.amkorea.auth.dto.SignInDto;
 import com.community.amkorea.auth.dto.SignUpDto;
 import com.community.amkorea.auth.service.AuthService;
 import com.community.amkorea.global.Util.Jwt.TokenProvider;
 import com.community.amkorea.global.Util.Mail.service.MailService;
+import com.community.amkorea.global.service.RedisService;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -31,6 +33,9 @@ class AuthControllerTest {
 
   @MockBean
   private MailService mailService;
+
+  @MockBean
+  private RedisService redisService;
 
   @MockBean
   private TokenProvider tokenProvider;
@@ -66,6 +71,26 @@ class AuthControllerTest {
         .andExpect(status().isCreated())
         .andExpect(jsonPath("$.email").value("test@test.com"))
         .andExpect(jsonPath("$.password").value("12345678"))
+        .andDo(print());
+  }
+
+
+  @Test
+  @DisplayName("로그인 성공")
+  void success_signIn() throws Exception {
+    //given
+    SignInDto signInDto = SignInDto.builder()
+        .email("test@test.com")
+        .password("12345")
+        .build();
+
+    //when
+    //then
+    mockMvc.perform(post("/api/auth/signIn")
+            .contentType(MediaType.APPLICATION_JSON)
+            .content(objectMapper.writeValueAsString(signInDto))
+            .with(csrf()))
+        .andExpect(status().isOk())
         .andDo(print());
   }
 }

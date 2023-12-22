@@ -31,8 +31,10 @@ public class SecurityConfig {
         .sessionManagement((sessionManagement) ->
             sessionManagement.sessionCreationPolicy(SessionCreationPolicy.STATELESS)
         )
-        .authorizeHttpRequests((authorizeRequests) ->
-            authorizeRequests.anyRequest().permitAll()
+        .authorizeHttpRequests(
+            auth -> auth
+                .requestMatchers("/api/auth/**").permitAll()
+                .anyRequest().authenticated()
         )
         .exceptionHandling(configurer -> {
           configurer.authenticationEntryPoint(customAuthenticationEntryPoint);
