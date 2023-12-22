@@ -37,6 +37,8 @@ public class AuthServiceImpl implements AuthService {
   private final TokenProvider tokenProvider;
   private final RedisService redisService;
 
+  private static final String REFRESH_TOKEN_PREFIX = "RT: ";
+
   @Override
   public SignUpDto signUp(SignUpDto request) {
     if (memberRepository.existsByEmail(request.getEmail())) {
@@ -84,12 +86,12 @@ public class AuthServiceImpl implements AuthService {
 
     //3. access-token 유효시간 확인 후에 BlackList 저장
     Long expireTime = tokenProvider.getExpireTime(request.getAccessToken());
-    redisService.setDataExpire(request.getAccessToken(), "Logout", expireTime);
+    redisService.setDataExpire(REFRESH_TOKEN_PREFIX + request.getAccessToken(), "Logout", expireTime);
   }
 
   private TokenDto generateToken(String email, String roleType) {
     TokenDto tokenDto = tokenProvider.generateToken(email, roleType);
-    redisService.setDataExpire(tokenDto.getAccessToken(),
+    redisService.setDataExpire(REFRESH_TOKEN_PREFIX + tokenDto.getAccessToken(),
         tokenDto.getRefreshToken(), tokenDto.getRefreshTokenExpireTime());
     return tokenDto;
   }
@@ -103,7 +105,7 @@ public class AuthServiceImpl implements AuthService {
     String data = redisService.getData(request.getHeader("accessToken"));
 
     //2. refresh-token exception check(null or invalid)
-    if (!StringUtils.hasText(data) || data.equals(request.getHeader("refreshToken"))) {
+    if (!StringUtils.hasText(data) || !data.equals(request.getHeader("refreshToken"))) {
       throw new CustomException(INVALID_TOKEN);
     }
 
