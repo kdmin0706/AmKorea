@@ -38,8 +38,7 @@ public class MemberServiceImpl implements MemberService {
     if (!Objects.equals(member.getPhoneNumber(), updateMemberDto.getPhoneNumber())) {
       member.setPhoneNumber(updateMemberDto.getPhoneNumber());
     }
-
-    return UpdateMemberDto.from(MemberDto.fromEntity(memberRepository.save(member)));
+    return UpdateMemberDto.from(MemberDto.fromEntity(member));
   }
 
   private Member getMember(String username) {
