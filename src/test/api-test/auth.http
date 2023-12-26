@@ -14,7 +14,16 @@ POST http://localhost:8080/api/auth/signIn
 Content-Type: application/json
 
 {
-  "email": "test2@test.com",
+  "email": "testtest@test.com",
+  "password": "12345"
+}
+
+### 로그인2
+POST http://localhost:8080/api/auth/signIn
+Content-Type: application/json
+
+{
+  "email": "testtest1@test.com",
   "password": "12345"
 }
 
@@ -40,7 +49,7 @@ POST http://localhost:8080/api/auth/logout
 Content-Type: application/json
 
 {
-  "accessToken": "eyJhbGciOiJIUzI1NiJ9.eyJpYXQiOjE3MDMxNTE1OTEsInN1YiI6ImFjY2Vzcy10b2tlbiIsInJvbGUiOiJVU0VSIiwidXNlcklkIjoidGVzdDJAdGVzdC5jb20iLCJleHAiOjE3MDMxNTMzOTF9.K9XDXFYtQW8dgoeR_CB1ExJQn3UyhwY2EKyXRVmoHNQ"
+  "accessToken": "eyJhbGciOiJIUzI1NiJ9.eyJpYXQiOjE3MDM0MDg4MTksInN1YiI6ImFjY2Vzcy10b2tlbiIsInJvbGUiOiJST0xFX0FETUlOIiwidXNlcklkIjoidGVzdHRlc3RAdGVzdC5jb20iLCJleHAiOjE3MDM0MTA2MTl9.75P46IJRFuAD3fr7fjeNjrF2lcOywAhWDOR9RKzXywU"
 }
 
 ### 토큰 재발급

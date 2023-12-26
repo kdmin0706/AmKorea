@@ -1,15 +1,14 @@
 package com.community.amkorea.global.Util.Jwt;
 
+import com.community.amkorea.global.exception.CustomException;
 import com.community.amkorea.global.exception.ErrorCode;
 import com.community.amkorea.global.service.RedisService;
-import io.jsonwebtoken.ExpiredJwtException;
-import io.jsonwebtoken.MalformedJwtException;
-import io.jsonwebtoken.UnsupportedJwtException;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import java.util.Objects;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.core.Authentication;
@@ -34,23 +33,16 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
     try {
       if (StringUtils.hasText(token) && tokenProvider.validateToken(token)) {
-        //access-token 로그아웃 여부 확인
-        if (redisService.getData(token) != null) {
+        //로그아웃 조건
+        if (Objects.isNull(redisService.getData(token))) {
           Authentication authentication = tokenProvider.getAuthentication(token);
           SecurityContextHolder.getContext().setAuthentication(authentication);
+        } else {
+          request.setAttribute("exception", ErrorCode.UNKNOWN_ERROR);
         }
       }
-    } catch (SecurityException | MalformedJwtException e) {
-      request.setAttribute("exception", ErrorCode.INVALID_TOKEN);
-    } catch (ExpiredJwtException e) {
-      request.setAttribute("exception", ErrorCode.EXPIRED_TOKEN);
-    } catch (UnsupportedJwtException e) {
-      request.setAttribute("exception", ErrorCode.UNSUPPORTED_TOKEN);
-    } catch (IllegalArgumentException e) {
-      request.setAttribute("exception", ErrorCode.WRONG_TYPE_TOKEN);
-    } catch (Exception e) {
-      log.error("doFilterInternal() Exception Message : {}", e.getMessage());
-      request.setAttribute("exception", ErrorCode.UNKNOWN_ERROR);
+    } catch (CustomException e) {
+      request.setAttribute("exception", e.getErrorCode());
     }
 
     filterChain.doFilter(request, response);

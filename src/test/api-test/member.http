@@ -1,0 +1,15 @@
+### 멤버 정보 조회
+GET http://localhost:8080/api/member
+Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJpYXQiOjE3MDM0MDk2NzUsInN1YiI6ImFjY2Vzcy10b2tlbiIsInJvbGUiOiJST0xFX0FETUlOIiwidXNlcklkIjoidGVzdHRlc3RAdGVzdC5jb20iLCJleHAiOjE3MDM0MTE0NzV9.xfw1LAzEiNgYC3ZzvQB2Vp-Z7CeTRvw4IWaO_7j2rgM
+
+### 멤버 정보 수정
+PUT http://localhost:8080/api/member
+Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJpYXQiOjE3MDM0MDk2NzUsInN1YiI6ImFjY2Vzcy10b2tlbiIsInJvbGUiOiJST0xFX0FETUlOIiwidXNlcklkIjoidGVzdHRlc3RAdGVzdC5jb20iLCJleHAiOjE3MDM0MTE0NzV9.xfw1LAzEiNgYC3ZzvQB2Vp-Z7CeTRvw4IWaO_7j2rgM
+
+{
+  "password": "12345",
+  "nickname": "seoul",
+  "phoneNumber": "010-1234-5678"
+}

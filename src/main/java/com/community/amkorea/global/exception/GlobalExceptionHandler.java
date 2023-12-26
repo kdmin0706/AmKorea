@@ -1,9 +1,11 @@
 package com.community.amkorea.global.exception;
 
 import static com.community.amkorea.global.exception.ErrorCode.INTERNAL_SERVER_ERROR;
+import static com.community.amkorea.global.exception.ErrorCode.INVALID_REQUEST;
 
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
+import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
@@ -17,6 +19,17 @@ public class GlobalExceptionHandler {
     return new ErrorResponse(e.getErrorCode(),
         e.getErrorCode().getHttpStatus(), e.getErrorCode().getDescription());
   }
+
+  /**
+   * VALIDATION ERROR
+   */
+  @ExceptionHandler(MethodArgumentNotValidException.class)
+  public ErrorResponse handleMethodArgumentNotValidException(MethodArgumentNotValidException e) {
+    log.error("CustomException is occurred." + e);
+    return new ErrorResponse(INVALID_REQUEST,
+        INVALID_REQUEST.getHttpStatus(), INVALID_REQUEST.getDescription());
+  }
+
 
   @ExceptionHandler(Exception.class)
   public ErrorResponse handleException(Exception e) {

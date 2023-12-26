@@ -1,6 +1,12 @@
 package com.community.amkorea.global.Util.Jwt;
 
+import static com.community.amkorea.global.exception.ErrorCode.EXPIRED_TOKEN;
+import static com.community.amkorea.global.exception.ErrorCode.INVALID_TOKEN;
+import static com.community.amkorea.global.exception.ErrorCode.UNSUPPORTED_TOKEN;
+import static com.community.amkorea.global.exception.ErrorCode.WRONG_TYPE_TOKEN;
+
 import com.community.amkorea.global.Util.Jwt.dto.TokenDto;
+import com.community.amkorea.global.exception.CustomException;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.ExpiredJwtException;
 import io.jsonwebtoken.Jwts;
@@ -93,14 +99,17 @@ public class TokenProvider {
       return !claims.getExpiration().before(new Date());
     } catch (SecurityException | MalformedJwtException e) {
       log.error("Invalid JWT token: {}", e.getMessage());
+      throw new CustomException(INVALID_TOKEN);
     } catch (ExpiredJwtException e) {
       log.error("JWT token is expired: {}", e.getMessage());
+      throw new CustomException(EXPIRED_TOKEN);
     } catch (UnsupportedJwtException e) {
       log.error("JWT token is unsupported: {}", e.getMessage());
+      throw new CustomException(UNSUPPORTED_TOKEN);
     } catch (IllegalArgumentException e) {
       log.error("JWT token is wrong type: {}", e.getMessage());
+      throw new CustomException(WRONG_TYPE_TOKEN);
     }
-    return false;
   }
 
   /**
@@ -126,7 +135,7 @@ public class TokenProvider {
     CustomUserDetails customUserDetails =
         (CustomUserDetails) customUserDetailService.loadUserByUsername(userId);
 
-    return new UsernamePasswordAuthenticationToken(customUserDetails.getUsername(),
+    return new UsernamePasswordAuthenticationToken(customUserDetails,
         "", customUserDetails.getAuthorities());
   }
 

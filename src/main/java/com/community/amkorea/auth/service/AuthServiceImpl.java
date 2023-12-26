@@ -80,13 +80,13 @@ public class AuthServiceImpl implements AuthService {
     }
 
     //2. redis 에서 해당 access-token 정보로 저장된 refresh-token 확인
-    if (redisService.getData(request.getAccessToken()) != null) {
-      redisService.deleteData(request.getAccessToken());
+    if (redisService.getData(REFRESH_TOKEN_PREFIX + request.getAccessToken()) != null) {
+      redisService.deleteData(REFRESH_TOKEN_PREFIX + request.getAccessToken());
     }
 
     //3. access-token 유효시간 확인 후에 BlackList 저장
     Long expireTime = tokenProvider.getExpireTime(request.getAccessToken());
-    redisService.setDataExpire(REFRESH_TOKEN_PREFIX + request.getAccessToken(), "Logout", expireTime);
+    redisService.setDataExpire(request.getAccessToken(), "Logout", expireTime);
   }
 
   private TokenDto generateToken(String email, String roleType) {

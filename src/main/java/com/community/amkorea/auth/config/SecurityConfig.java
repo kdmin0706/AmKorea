@@ -34,7 +34,9 @@ public class SecurityConfig {
         .authorizeHttpRequests(
             auth -> auth
                 .requestMatchers("/api/auth/**").permitAll()
-                .anyRequest().authenticated()
+                .requestMatchers("/api/member").hasAnyRole("USER")
+                .requestMatchers("/api/admin").hasRole("ADMIN")
+                .anyRequest().permitAll()
         )
         .exceptionHandling(configurer -> {
           configurer.authenticationEntryPoint(customAuthenticationEntryPoint);
