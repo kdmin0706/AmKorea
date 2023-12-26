@@ -11,6 +11,7 @@ public enum ErrorCode {
   /**
    * 400 Bad Request
    */
+  INVALID_REQUEST(HttpStatus.BAD_REQUEST, "잘못된 요청입니다."),
   PASSWORD_NOT_MATCH(HttpStatus.BAD_REQUEST, "비밀번호가 올바르지 않습니다."),
   INVALID_AUTH_CODE(HttpStatus.BAD_REQUEST, "인증번호가 올바르지 않습니다."),
   EMAIL_NOT_VERITY(HttpStatus.BAD_REQUEST, "이메일 인증이 되지 않았습니다."),
