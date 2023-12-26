@@ -29,7 +29,7 @@ public class MemberServiceImpl implements MemberService {
   @Transactional
   public UpdateMemberDto updateMember(UpdateMemberDto updateMemberDto, String email) {
     Member member = getMember(email);
-    if (!Objects.equals(member.getPassword(), updateMemberDto.getPassword())) {
+    if (!passwordEncoder.matches(updateMemberDto.getPassword(), member.getPassword())) {
       member.setPassword(passwordEncoder.encode(updateMemberDto.getPassword()));
     }
     if (!Objects.equals(member.getNickname(), updateMemberDto.getNickname())) {
