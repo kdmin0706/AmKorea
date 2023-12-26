@@ -2,7 +2,7 @@ package com.community.amkorea.member.controller;
 
 import com.community.amkorea.auth.config.LoginUser;
 import com.community.amkorea.global.Util.Jwt.CustomUserDetails;
-import com.community.amkorea.member.dto.UpdateMemberDto;
+import com.community.amkorea.member.dto.UpdateMemberResponse;
 import com.community.amkorea.member.service.MemberService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -25,7 +25,7 @@ public class MemberController {
   }
 
   @PutMapping("/member")
-  public ResponseEntity<?> updateMember(@Valid @RequestBody UpdateMemberDto updateMemberDto,
+  public ResponseEntity<?> updateMember(@Valid @RequestBody UpdateMemberResponse updateMemberDto,
       @LoginUser CustomUserDetails userDetails) {
     return ResponseEntity.ok(memberService.updateMember(updateMemberDto, userDetails.getUsername()));
   }

@@ -12,7 +12,7 @@ import lombok.Setter;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class UpdateMemberDto {
+public class UpdateMemberResponse {
 
   @NotBlank(message = "닉네임 입력은 필수입니다.")
   private String nickname;
@@ -23,8 +23,8 @@ public class UpdateMemberDto {
   @NotBlank(message = "휴대전화번호 입력은 필수입니다.")
   private String phoneNumber;
 
-  public static UpdateMemberDto from(MemberDto memberDto) {
-    return UpdateMemberDto.builder()
+  public static UpdateMemberResponse from(MemberDto memberDto) {
+    return UpdateMemberResponse.builder()
         .nickname(memberDto.getNickname())
         .password(memberDto.getPassword())
         .phoneNumber(memberDto.getPhoneNumber())

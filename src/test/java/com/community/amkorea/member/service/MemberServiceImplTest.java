@@ -5,7 +5,7 @@ import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.BDDMockito.given;
 
 import com.community.amkorea.member.dto.MemberDto;
-import com.community.amkorea.member.dto.UpdateMemberDto;
+import com.community.amkorea.member.dto.UpdateMemberResponse;
 import com.community.amkorea.member.entity.Member;
 import com.community.amkorea.member.entity.enums.RoleType;
 import com.community.amkorea.member.repository.MemberRepository;
@@ -61,7 +61,7 @@ class MemberServiceImplTest {
   @DisplayName("회원 정보 수정 완료")
   void success_updateMember() {
     //given
-    UpdateMemberDto update = UpdateMemberDto.builder()
+    UpdateMemberResponse update = UpdateMemberResponse.builder()
         .nickname("김영희")
         .phoneNumber("010-5555-6666")
         .password("12345")
@@ -71,7 +71,7 @@ class MemberServiceImplTest {
         .willReturn(Optional.of(member));
 
     //when
-    UpdateMemberDto memberDto = memberService.updateMember(update, "test@test.com");
+    UpdateMemberResponse memberDto = memberService.updateMember(update, "test@test.com");
 
     //then
     Assertions.assertEquals(update.getNickname(), memberDto.getNickname());
