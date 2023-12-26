@@ -27,17 +27,13 @@ public class MemberServiceImpl implements MemberService {
 
   @Override
   @Transactional
-  public UpdateMemberDto updateMember(UpdateMemberDto updateMemberDto, String email) {
-    Member member = getMember(email);
-    if (!passwordEncoder.matches(updateMemberDto.getPassword(), member.getPassword())) {
-      member.setPassword(passwordEncoder.encode(updateMemberDto.getPassword()));
-    }
-    if (!Objects.equals(member.getNickname(), updateMemberDto.getNickname())) {
-      member.setNickname(updateMemberDto.getNickname());
-    }
-    if (!Objects.equals(member.getPhoneNumber(), updateMemberDto.getPhoneNumber())) {
-      member.setPhoneNumber(updateMemberDto.getPhoneNumber());
-    }
+  public UpdateMemberDto updateMember(UpdateMemberDto updateMemberDto, String username) {
+    Member member = getMember(username);
+
+    member.setPassword(passwordEncoder.encode(updateMemberDto.getPassword()));
+    member.setNickname(updateMemberDto.getNickname());
+    member.setPhoneNumber(updateMemberDto.getPhoneNumber());
+
     return UpdateMemberDto.from(MemberDto.fromEntity(member));
   }
 

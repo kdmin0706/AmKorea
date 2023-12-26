@@ -4,6 +4,7 @@ import com.community.amkorea.auth.config.LoginUser;
 import com.community.amkorea.global.Util.Jwt.CustomUserDetails;
 import com.community.amkorea.member.dto.UpdateMemberDto;
 import com.community.amkorea.member.service.MemberService;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -24,7 +25,7 @@ public class MemberController {
   }
 
   @PutMapping("/member")
-  public ResponseEntity<?> updateMember(@RequestBody UpdateMemberDto updateMemberDto,
+  public ResponseEntity<?> updateMember(@Valid @RequestBody UpdateMemberDto updateMemberDto,
       @LoginUser CustomUserDetails userDetails) {
     return ResponseEntity.ok(memberService.updateMember(updateMemberDto, userDetails.getUsername()));
   }
