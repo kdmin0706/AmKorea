@@ -1,8 +1,14 @@
 package com.community.amkorea.auth.config;
 
+import static org.springframework.http.HttpMethod.DELETE;
+import static org.springframework.http.HttpMethod.POST;
+import static org.springframework.http.HttpMethod.PUT;
+import static org.springframework.security.web.util.matcher.AntPathRequestMatcher.antMatcher;
+
 import com.community.amkorea.global.Util.Jwt.CustomAuthenticationEntryPoint;
 import com.community.amkorea.global.Util.Jwt.CustomDeniedHandler;
 import com.community.amkorea.global.Util.Jwt.JwtAuthenticationFilter;
+import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -12,6 +18,7 @@ import org.springframework.security.config.annotation.web.configurers.AbstractHt
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+import org.springframework.security.web.util.matcher.RequestMatcher;
 
 @Configuration
 @EnableWebSecurity
@@ -33,9 +40,8 @@ public class SecurityConfig {
         )
         .authorizeHttpRequests(
             auth -> auth
-                .requestMatchers("/api/auth/**").permitAll()
-                .requestMatchers("/api/member").hasAnyRole("USER")
-                .requestMatchers("/api/admin").hasRole("ADMIN")
+                .requestMatchers(requestHasRoleUser()).hasRole("USER")
+                .requestMatchers(requestHasRoleAdmin()).hasRole("ADMIN")
                 .anyRequest().permitAll()
         )
         .exceptionHandling(configurer -> {
@@ -46,4 +52,25 @@ public class SecurityConfig {
 
     return httpSecurity.build();
   }
+
+  private RequestMatcher[] requestHasRoleUser() {
+    List<RequestMatcher> requestMatchers = List.of(
+        antMatcher("/api/member"),
+        antMatcher(POST, "/api/post"),
+        antMatcher(PUT, "/api/post"),
+        antMatcher(DELETE, "/api/post"),
+        antMatcher(POST, "/api/post/like"),
+        antMatcher(POST, "/api/post/unlike")
+    );
+    return requestMatchers.toArray(RequestMatcher[]::new);
+  }
+
+  private RequestMatcher[] requestHasRoleAdmin() {
+    List<RequestMatcher> requestMatchers = List.of(
+        antMatcher("/api/admin/**")
+    );
+
+    return requestMatchers.toArray(RequestMatcher[]::new);
+  }
+
 }
