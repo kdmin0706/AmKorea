@@ -1,6 +1,5 @@
 package com.community.amkorea.auth.config;
 
-import com.community.amkorea.global.Util.Jwt.CustomUserDetails;
 import com.community.amkorea.global.exception.CustomException;
 import com.community.amkorea.global.exception.ErrorCode;
 import java.util.Objects;
@@ -19,7 +18,7 @@ public class LoginUserArgumentResolver implements HandlerMethodArgumentResolver 
   @Override
   public boolean supportsParameter(MethodParameter parameter) {
     boolean isLoginUserAnnotation  = parameter.hasParameterAnnotation(LoginUser.class);
-    boolean isUserClass = CustomUserDetails.class.equals(parameter.getParameterType());
+    boolean isUserClass = String.class.equals(parameter.getParameterType());
     return isLoginUserAnnotation && isUserClass;
   }
 
@@ -30,6 +29,6 @@ public class LoginUserArgumentResolver implements HandlerMethodArgumentResolver 
     if (Objects.isNull(authentication)) {
       throw new CustomException(ErrorCode.UNKNOWN_ERROR);
     }
-    return authentication.getPrincipal();
+    return authentication.getName();
   }
 }

@@ -1,7 +1,6 @@
 package com.community.amkorea.member.controller;
 
 import com.community.amkorea.auth.config.LoginUser;
-import com.community.amkorea.global.Util.Jwt.CustomUserDetails;
 import com.community.amkorea.member.dto.UpdateMemberResponse;
 import com.community.amkorea.member.service.MemberService;
 import jakarta.validation.Valid;
@@ -20,13 +19,13 @@ public class MemberController {
   private final MemberService memberService;
 
   @GetMapping("/member")
-  public ResponseEntity<?> findMemberInfo(@LoginUser CustomUserDetails userDetails) {
-    return ResponseEntity.ok(memberService.findMember(userDetails.getUsername()));
+  public ResponseEntity<?> findMemberInfo(@LoginUser String username) {
+    return ResponseEntity.ok(memberService.findMember(username));
   }
 
   @PutMapping("/member")
   public ResponseEntity<?> updateMember(@Valid @RequestBody UpdateMemberResponse updateMemberDto,
-      @LoginUser CustomUserDetails userDetails) {
-    return ResponseEntity.ok(memberService.updateMember(updateMemberDto, userDetails.getUsername()));
+      @LoginUser String username) {
+    return ResponseEntity.ok(memberService.updateMember(updateMemberDto, username));
   }
 }
