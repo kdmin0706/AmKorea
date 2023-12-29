@@ -46,14 +46,14 @@ public class Post extends BaseEntity {
   private Member member;
 
   @Column(nullable = false)
-  private int likes;
+  private int likeCount;
 
   @Builder.Default
   @OneToMany(mappedBy = "post", cascade = CascadeType.ALL, orphanRemoval = true)
   private List<PostLike> postLikeList = new ArrayList<>();
 
   public void updateLikeCount() {
-    this.likes = this.postLikeList.size();
+    this.likeCount = this.postLikeList.size();
   }
 
   public void addPostLike(PostLike postLike) {
