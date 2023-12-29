@@ -15,6 +15,7 @@ import com.community.amkorea.post.service.PostService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Slice;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -80,14 +81,14 @@ public class PostServiceImpl implements PostService {
 
   @Override
   @Transactional(readOnly = true)
-  public Page<PostResponse> searchTitle(String title, Pageable pageable) {
-    return postRepository.findAllByTitleContaining(title, pageable).map(PostResponse::fromEntity);
+  public Slice<PostResponse> searchTitle(Long id, String name, Pageable pageable) {
+    return postRepository.searchByTitle(id, name, pageable).map(PostResponse::fromEntity);
   }
 
   @Override
   @Transactional(readOnly = true)
   public Page<PostResponse> searchContent(String content, Pageable pageable) {
-    return postRepository.findByContent(content, pageable).map(PostResponse::fromEntity);
+    return postRepository.findAllByContentContaining(content, pageable).map(PostResponse::fromEntity);
   }
 
   @Override

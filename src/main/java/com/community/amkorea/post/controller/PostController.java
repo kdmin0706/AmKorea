@@ -59,15 +59,16 @@ public class PostController {
     return ResponseEntity.ok(postService.findPosts(pageable));
   }
 
-  @GetMapping("/post/search/title/{title}")
-  public ResponseEntity<?> searchTitle(@PathVariable String title,
-      @PageableDefault(size = 15, sort="createdAt", direction= Sort.Direction.DESC) Pageable pageable) {
-    return ResponseEntity.ok(postService.searchTitle(title, pageable));
+  @GetMapping("/post/search/title")
+  public ResponseEntity<?> searchTitle(@RequestParam("id") Long id,
+      @RequestParam("name") String name,
+      @PageableDefault(sort="createdAt", direction= Sort.Direction.DESC) Pageable pageable) {
+    return ResponseEntity.ok(postService.searchTitle(id, name, pageable));
   }
 
   @GetMapping("/post/search/content/{content}")
   public ResponseEntity<?> searchContent(@PathVariable String content,
-      @PageableDefault(size = 15, sort="createdAt", direction= Sort.Direction.DESC) Pageable pageable) {
+      @PageableDefault(sort="createdAt", direction= Sort.Direction.DESC) Pageable pageable) {
     return ResponseEntity.ok(postService.searchContent(content, pageable));
   }
 

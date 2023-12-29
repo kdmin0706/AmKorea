@@ -4,6 +4,7 @@ import com.community.amkorea.post.dto.PostRequest;
 import com.community.amkorea.post.dto.PostResponse;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Slice;
 
 public interface PostService {
 
@@ -35,7 +36,7 @@ public interface PostService {
   /**
    * 제목이 포함된 키워드를 검색해서 게시글 찾기
    */
-  Page<PostResponse> searchTitle(String title, Pageable pageable);
+  Slice<PostResponse> searchTitle(Long id, String name, Pageable pageable);
 
   /**
    * 내용 포함된 키워드 검색해서 게시글 찾기
