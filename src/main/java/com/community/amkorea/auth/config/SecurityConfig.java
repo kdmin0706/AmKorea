@@ -16,6 +16,8 @@ import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
 import org.springframework.security.config.http.SessionCreationPolicy;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.security.web.util.matcher.RequestMatcher;
@@ -28,6 +30,11 @@ public class SecurityConfig {
   private final JwtAuthenticationFilter jwtAuthenticationFilter;
   private final CustomAuthenticationEntryPoint customAuthenticationEntryPoint;
   private final CustomDeniedHandler customDeniedHandler;
+
+  @Bean
+  public PasswordEncoder passwordEncoder() {
+    return new BCryptPasswordEncoder();
+  }
 
   @Bean
   public SecurityFilterChain filterChain(HttpSecurity httpSecurity) throws Exception {
@@ -67,7 +74,7 @@ public class SecurityConfig {
 
   private RequestMatcher[] requestHasRoleAdmin() {
     List<RequestMatcher> requestMatchers = List.of(
-        antMatcher("/api/admin/**")
+        antMatcher("/api/post/category/**")
     );
 
     return requestMatchers.toArray(RequestMatcher[]::new);
