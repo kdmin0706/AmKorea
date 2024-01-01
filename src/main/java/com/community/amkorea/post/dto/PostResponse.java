@@ -1,6 +1,7 @@
 package com.community.amkorea.post.dto;
 
 import com.community.amkorea.post.entity.Post;
+import java.time.LocalDateTime;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -17,6 +18,8 @@ public class PostResponse {
   private String title;
   private String content;
   private String username;
+  private int likeCount;
+  private LocalDateTime createdAt;
 
   public static PostResponse fromEntity(Post post) {
     return PostResponse.builder()
@@ -24,6 +27,8 @@ public class PostResponse {
         .username(post.getMember().getEmail())
         .title(post.getTitle())
         .content(post.getContent())
+        .likeCount(post.getLikeCount())
+        .createdAt(post.getCreatedAt())
         .build();
   }
 }
