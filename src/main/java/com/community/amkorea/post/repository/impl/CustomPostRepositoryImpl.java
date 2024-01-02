@@ -24,7 +24,11 @@ public class CustomPostRepositoryImpl implements CustomPostRepository {
             ltPostId(postId), //첫번째 페이지 조회 시 ltPostId == null 처리
             post.title.contains(title)
         )
-        .orderBy(post.id.desc())
+        .orderBy(
+            post.id.desc(),
+            post.views.desc(),
+            post.likeCount.desc()
+        )
         .limit(pageable.getPageSize() + 1)
         .fetch();
 
