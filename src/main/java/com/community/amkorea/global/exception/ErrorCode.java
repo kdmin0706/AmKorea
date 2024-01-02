@@ -15,6 +15,9 @@ public enum ErrorCode {
   PASSWORD_NOT_MATCH(HttpStatus.BAD_REQUEST, "비밀번호가 올바르지 않습니다."),
   INVALID_AUTH_CODE(HttpStatus.BAD_REQUEST, "인증번호가 올바르지 않습니다."),
   EMAIL_NOT_VERITY(HttpStatus.BAD_REQUEST, "이메일 인증이 되지 않았습니다."),
+  POST_NOT_MINE(HttpStatus.BAD_REQUEST, "본인의 게시물이 아닙니다."),
+  POST_ALREADY_LIKE(HttpStatus.BAD_REQUEST, "현재 게시물은 좋아요가 눌려있습니다."),
+  POST_ALREADY_UNLIKE(HttpStatus.BAD_REQUEST, "현재 게시물은 좋아요 상태가 아닙니다."),
 
   /**
    * 401 Unauthorized
@@ -31,6 +34,8 @@ public enum ErrorCode {
    */
   USER_NOT_FOUND(HttpStatus.NOT_FOUND, "존재하지 않는 회원입니다."),
   EMAIL_NOT_FOUND(HttpStatus.NOT_FOUND, "존재하지 않는 이메일입니다"),
+  POST_NOT_FOUND(HttpStatus.NOT_FOUND, "존재하지 않는 게시글입니다"),
+
 
   /**
    * 409 conflict
