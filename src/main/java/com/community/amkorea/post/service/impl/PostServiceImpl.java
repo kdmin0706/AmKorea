@@ -87,8 +87,8 @@ public class PostServiceImpl implements PostService {
 
   @Override
   @Transactional(readOnly = true)
-  public Page<PostResponse> searchContent(String content, Pageable pageable) {
-    return postRepository.findAllByContentContaining(content, pageable).map(PostResponse::fromEntity);
+  public Page<PostResponse> searchContent(String name, Pageable pageable) {
+    return postRepository.findAllByContentContaining(name, pageable).map(PostResponse::fromEntity);
   }
 
   @Override

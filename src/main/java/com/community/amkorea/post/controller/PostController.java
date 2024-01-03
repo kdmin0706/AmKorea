@@ -2,7 +2,6 @@ package com.community.amkorea.post.controller;
 
 import com.community.amkorea.auth.config.LoginUser;
 import com.community.amkorea.post.dto.PostRequest;
-import com.community.amkorea.post.service.PostLikeService;
 import com.community.amkorea.post.service.PostService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -28,7 +27,6 @@ import org.springframework.web.bind.annotation.RestController;
 public class PostController {
 
   private final PostService postService;
-  private final PostLikeService postLikeService;
 
   @PostMapping("/post")
   public ResponseEntity<?> create(@Valid @RequestBody PostRequest requestDto,
@@ -66,20 +64,9 @@ public class PostController {
     return ResponseEntity.ok(postService.searchTitle(id, name, pageable));
   }
 
-  @GetMapping("/post/search/content/{content}")
-  public ResponseEntity<?> searchContent(@PathVariable String content,
+  @GetMapping("/post/search/content")
+  public ResponseEntity<?> searchContent(@RequestParam("name") String name,
       @PageableDefault(sort="createdAt", direction= Sort.Direction.DESC) Pageable pageable) {
-    return ResponseEntity.ok(postService.searchContent(content, pageable));
+    return ResponseEntity.ok(postService.searchContent(name, pageable));
   }
-
-  @PostMapping("/post/like")
-  public ResponseEntity<?> like(@RequestParam(name = "id") Long postId, @LoginUser String username) {
-    return ResponseEntity.ok(postLikeService.like(postId, username));
-  }
-
-  @PostMapping("/post/unlike")
-  public ResponseEntity<?> unLike(@RequestParam(name = "id") Long postId, @LoginUser String username) {
-    return ResponseEntity.ok(postLikeService.unLike(postId, username));
-  }
-
 }

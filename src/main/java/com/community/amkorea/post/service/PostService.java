@@ -41,5 +41,5 @@ public interface PostService {
   /**
    * 내용 포함된 키워드 검색해서 게시글 찾기
    */
-  Page<PostResponse> searchContent(String content, Pageable pageable);
+  Page<PostResponse> searchContent(String name, Pageable pageable);
 }
