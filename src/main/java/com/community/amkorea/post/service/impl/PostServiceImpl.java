@@ -3,7 +3,7 @@ package com.community.amkorea.post.service.impl;
 import static com.community.amkorea.global.exception.ErrorCode.EMAIL_NOT_FOUND;
 import static com.community.amkorea.global.exception.ErrorCode.POST_CATEGORY_NOT_FOUND;
 import static com.community.amkorea.global.exception.ErrorCode.POST_NOT_FOUND;
-import static com.community.amkorea.global.exception.ErrorCode.POST_NOT_MINE;
+import static com.community.amkorea.global.exception.ErrorCode.WRITE_NOT_YOURSELF;
 
 import com.community.amkorea.global.exception.CustomException;
 import com.community.amkorea.global.service.RedisService;
@@ -87,7 +87,7 @@ public class PostServiceImpl implements PostService {
   private void validationPost(Post post, Member member) {
     //본인의 게시물이 맞는지 확인
     if (!post.getMember().getEmail().equals(member.getEmail())) {
-      throw new CustomException(POST_NOT_MINE);
+      throw new CustomException(WRITE_NOT_YOURSELF);
     }
   }
 
