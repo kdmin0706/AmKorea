@@ -3,6 +3,7 @@ package com.community.amkorea.post.controller;
 import com.community.amkorea.auth.config.LoginUser;
 import com.community.amkorea.post.dto.PostRequest;
 import com.community.amkorea.post.service.PostService;
+import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Pageable;
@@ -47,13 +48,18 @@ public class PostController {
     return ResponseEntity.ok(postService.updatePost(id, requestDto, username));
   }
 
-  @GetMapping("/post/{id}")
-  public ResponseEntity<?> findPost(@PathVariable Long id) {
+  @GetMapping("/post/detail/{id}")
+  public ResponseEntity<?> readPost(@PathVariable Long id, HttpServletRequest request) {
+    return ResponseEntity.ok(postService.readPost(id, request));
+  }
+
+  @GetMapping("/post/search/{id}")
+  public ResponseEntity<?> searchPost(@PathVariable Long id) {
     return ResponseEntity.ok(postService.findPost(id));
   }
 
-  @GetMapping("/posts")
-  public ResponseEntity<?> findAllPost(@PageableDefault(sort = "createdAt", direction = Direction.DESC) Pageable pageable) {
+  @GetMapping("/post/searchAll")
+  public ResponseEntity<?> searchAllPost(@PageableDefault(sort = "createdAt", direction = Direction.DESC) Pageable pageable) {
     return ResponseEntity.ok(postService.findPosts(pageable));
   }
 

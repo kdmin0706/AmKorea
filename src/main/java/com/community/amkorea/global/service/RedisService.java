@@ -1,5 +1,6 @@
 package com.community.amkorea.global.service;
 
+import java.util.Set;
 import java.util.concurrent.TimeUnit;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.redis.core.RedisTemplate;
@@ -29,4 +30,11 @@ public class RedisService {
     redisTemplate.delete(key);
   }
 
+  public void increaseData(String key) {
+    redisTemplate.opsForValue().increment(key);
+  }
+
+  public Set<String> hasKeys(String keys) {
+    return redisTemplate.keys(keys);
+  }
 }

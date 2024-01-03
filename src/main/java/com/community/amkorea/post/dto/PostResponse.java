@@ -18,6 +18,7 @@ public class PostResponse {
   private String title;
   private String content;
   private String username;
+  private int views;
   private int likeCount;
   private LocalDateTime createdAt;
 
@@ -27,6 +28,7 @@ public class PostResponse {
         .username(post.getMember().getEmail())
         .title(post.getTitle())
         .content(post.getContent())
+        .views(post.getViews())
         .likeCount(post.getLikeCount())
         .createdAt(post.getCreatedAt())
         .build();

@@ -2,6 +2,7 @@ package com.community.amkorea.post.service;
 
 import com.community.amkorea.post.dto.PostRequest;
 import com.community.amkorea.post.dto.PostResponse;
+import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Slice;
@@ -27,6 +28,11 @@ public interface PostService {
    * 단일 게시글 검색
    */
   PostResponse findPost(Long id);
+
+  /**
+   * 게시글 조회
+   */
+  PostResponse readPost(Long id, HttpServletRequest request);
 
   /**
    * 게시글 조회
