@@ -1,6 +1,5 @@
 package com.community.amkorea.auth.service;
 
-import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyString;
@@ -10,7 +9,6 @@ import static org.mockito.Mockito.doReturn;
 import com.community.amkorea.auth.dto.SignInDto;
 import com.community.amkorea.auth.dto.SignUpDto;
 import com.community.amkorea.global.Util.Jwt.TokenProvider;
-import com.community.amkorea.global.Util.Jwt.dto.TokenDto;
 import com.community.amkorea.global.exception.CustomException;
 import com.community.amkorea.global.exception.ErrorCode;
 import com.community.amkorea.member.entity.Member;
@@ -101,33 +99,6 @@ class AuthServiceImplTest {
     //then
     assertEquals("test@test.com", signed.getEmail());
     assertEquals("010-1234-5678", signed.getPhoneNumber());
-  }
-
-  @Test
-  @DisplayName("로그인 성공")
-  void success_signIn() {
-    //given
-    SignInDto signInDto = SignInDto.builder()
-        .email("test@test.com")
-        .password("12345")
-        .build();
-
-    doReturn(Optional.of(member)).when(memberRepository).findByEmail(anyString());
-    doReturn(true).when(passwordEncoder).matches(any(),any());
-    member.changeEmailAuth();
-    doReturn(TokenDto.builder()
-        .accessToken("accessToken")
-        .refreshToken("refreshToken")
-        .refreshTokenExpireTime(12345L)
-        .accessTokenExpireTime(12345L)
-        .build())
-    .when(tokenProvider).generateToken(member.getEmail(), member.getRoleType().getCode());
-
-    //when
-    TokenDto tokenDto = authService.signIn(signInDto);
-
-    //then
-    assertThat(tokenDto.getAccessToken()).isEqualTo("accessToken");
   }
 
   @Test

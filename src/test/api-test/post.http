@@ -1,11 +1,12 @@
 ### 게시글 생성
 POST http://localhost:8080/api/post
 Content-Type: application/json
-Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJpYXQiOjE3MDM3NDM3NDMsInN1YiI6ImFjY2Vzcy10b2tlbiIsInJvbGUiOiJST0xFX1VTRVIiLCJ1c2VySWQiOiJ0ZXN0dGVzdDRAZ21haWwuY29tIiwiZXhwIjoxNzAzNzQ1NTQzfQ.MepfojHcuN5IGs8HcwWsA_KBNQAu6hA7tpjcZ567_AQ
+Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJpYXQiOjE3MDQyNDk2NTAsInN1YiI6ImFjY2Vzcy10b2tlbiIsInJvbGUiOiJST0xFX1VTRVIiLCJ1c2VySWQiOiJ0ZXN0dGVzdDJAZ21haWwuY29tIiwiZXhwIjoxNzA0MjUxNDUwfQ.8e9yw1zzRI9V5uK_YsK0CGCoEsUgAf2OONxkqeCb4Bo
 
 {
-  "title": "o4ffs6et1",
-  "content": "cont2ekdasf"
+  "title": "제목4",
+  "content": "내용4",
+  "category": "아스날"
 }
 
 ### 게시글 수정
@@ -24,27 +25,53 @@ Content-Type: application/json
 Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJpYXQiOjE3MDM2NjM0ODksInN1YiI6ImFjY2Vzcy10b2tlbiIsInJvbGUiOiJST0xFX1VTRVIiLCJ1c2VySWQiOiJ0ZXN0dGVzdDJAZ21haWwuY29tIiwiZXhwIjoxNzAzNjY1Mjg5fQ.k80vZF36KknQA1-eEgXaxMVGV6HoW60vai-G9iPm6io
 
 ### 게시글 리스트 조회
-GET http://localhost:8080/api/posts
+GET http://localhost:8080/api/post/searchAll
 Content-Type: application/json
 
-### 게시글 단건 조회
-GET http://localhost:8080/api/post/1
+### 게시글 조회
+GET http://localhost:8080/api/post/detail/3
+Content-Type: application/json
+
+### 게시글 단건 검색
+GET http://localhost:8080/api/post/search/2
 Content-Type: application/json
 
 ### 게시글 조회 (제목)
-GET http://localhost:8080/api/post/search/title/1
+GET http://localhost:8080/api/post/search/title?name=제목
 Content-Type: application/json
 
 ### 게시글 조회 (내용)
-GET http://localhost:8080/api/post/search/content/1
+GET http://localhost:8080/api/post/search/content?name=내용
 Content-Type: application/json
 
 ### 게시글 좋아요
 POST http://localhost:8080/api/post/like?id=1
 Content-Type: application/json
-Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJpYXQiOjE3MDM3NDM3NDMsInN1YiI6ImFjY2Vzcy10b2tlbiIsInJvbGUiOiJST0xFX1VTRVIiLCJ1c2VySWQiOiJ0ZXN0dGVzdDRAZ21haWwuY29tIiwiZXhwIjoxNzAzNzQ1NTQzfQ.MepfojHcuN5IGs8HcwWsA_KBNQAu6hA7tpjcZ567_AQ
+Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJpYXQiOjE3MDQyNTMyNTUsInN1YiI6ImFjY2Vzcy10b2tlbiIsInJvbGUiOiJST0xFX1VTRVIiLCJ1c2VySWQiOiJ0ZXN0dGVzdDFAZ21haWwuY29tIiwiZXhwIjoxNzA0MjU1MDU1fQ.cXBIPsdyrJ_Niu1paAqSOmMGMTgtcz3Ff5e2EaFMu4Y
 
 ### 게시글 좋아요 취소
 POST http://localhost:8080/api/post/unlike?id=1
 Content-Type: application/json
 Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJpYXQiOjE3MDM3NDM3NDMsInN1YiI6ImFjY2Vzcy10b2tlbiIsInJvbGUiOiJST0xFX1VTRVIiLCJ1c2VySWQiOiJ0ZXN0dGVzdDRAZ21haWwuY29tIiwiZXhwIjoxNzAzNzQ1NTQzfQ.MepfojHcuN5IGs8HcwWsA_KBNQAu6hA7tpjcZ567_AQ
+
+### 게시글 카테고리 생성
+POST http://localhost:8080/api/post/category
+Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJpYXQiOjE3MDQyNTAxMjYsInN1YiI6ImFjY2Vzcy10b2tlbiIsInJvbGUiOiJST0xFX0FETUlOIiwidXNlcklkIjoidGVzdHRlc3Q1QGdtYWlsLmNvbSIsImV4cCI6MTcwNDI1MTkyNn0.sBDNyNtGP-V4ymVTKT_wCs8ZuFukZNtqLusT112K2XM
+
+{
+  "name": "토트넘"
+}
+
+### 게시글 카테고리 이름 변경
+PUT http://localhost:8080/api/post/category?id=2
+Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJpYXQiOjE3MDQyNTMxODcsInN1YiI6ImFjY2Vzcy10b2tlbiIsInJvbGUiOiJST0xFX0FETUlOIiwidXNlcklkIjoidGVzdHRlc3Q1QGdtYWlsLmNvbSIsImV4cCI6MTcwNDI1NDk4N30._jsHD0pfTtr3Ks-EZ3J-ZcZrtjHAZxCB4NfvW96nc-k
+
+{
+  "name": "아스날"
+}
+
+### 게시글 카테고리 검색
+GET http://localhost:8080/api/post/category?id=1
+Content-Type: application/json
