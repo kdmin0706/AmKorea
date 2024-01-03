@@ -17,7 +17,7 @@ import com.community.amkorea.post.repository.PostRepository;
 import com.community.amkorea.post.service.PostService;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpSession;
-import java.util.Set;
+import java.util.Map;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
@@ -37,7 +37,7 @@ public class PostServiceImpl implements PostService {
   private final PostCategoryRepository postCategoryRepository;
 
   private final RedisService redisService;
-  private static final String VIEW_PREFIX = "view: ";
+  private static final String VIEW_HASH_KEY = "postViews";
 
   @Override
   @Transactional
@@ -61,11 +61,6 @@ public class PostServiceImpl implements PostService {
 
     validationPost(post, member);
 
-    //redis에 조회 데이터가 있는 경우 삭제
-    if (redisService.getData(VIEW_PREFIX + id) != null) {
-      redisService.deleteData(VIEW_PREFIX + id);
-    }
-    
     member.removePost(post);
     postRepository.delete(post);
   }
@@ -136,7 +131,7 @@ public class PostServiceImpl implements PostService {
       session.setAttribute("readPost: " + id, true);
 
       //데이터 증가
-      redisService.increaseData(VIEW_PREFIX + id);
+      redisService.increaseHashData(VIEW_HASH_KEY, id.toString());
 
     } else {
       log.info("중복 요청 발생으로 인한 조회수 미반영");
@@ -151,16 +146,18 @@ public class PostServiceImpl implements PostService {
 
   @Scheduled(cron = "${spring.scheduler.refresh-time}")
   public void updateViewCountToDB() {
-    Set<String> viewCountKeys = redisService.hasKeys(VIEW_PREFIX + "*");
+    Map<Object, Object> map = redisService.hasHashKeys(VIEW_HASH_KEY);
 
-    if (viewCountKeys != null) {
-      for (String key : viewCountKeys) {
-        Long postId = Long.parseLong(key.split(": ")[1]);
-        int views = Integer.parseInt(redisService.getData(key));
+    for (Map.Entry<Object, Object> entry : map.entrySet()) {
+      Long postId = Long.parseLong(entry.getKey().toString());
+      int views = Integer.parseInt(entry.getValue().toString());
 
-        //DB에 데이터 반영
-        postRepository.UpdateViews(postId, views);
-      }
+      //DB에 데이터 반영
+      postRepository.updateViews(postId, views);
+
+      //데이터 적용 후 삭제
+      redisService.deleteHashKey(VIEW_HASH_KEY, postId.toString());
     }
   }
+
 }

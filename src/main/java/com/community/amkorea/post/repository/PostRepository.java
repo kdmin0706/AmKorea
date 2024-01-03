@@ -2,7 +2,6 @@ package com.community.amkorea.post.repository;
 
 import com.community.amkorea.post.entity.Post;
 import io.lettuce.core.dynamic.annotation.Param;
-import java.util.List;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -17,7 +16,7 @@ public interface PostRepository extends JpaRepository<Post, Long> , CustomPostRe
   Page<Post> findAllByContentContaining(String content, Pageable pageable);
 
   @Query("SELECT p FROM Post p LEFT JOIN p.postCategory c WHERE c.id = :categoryId")
-  List<Post> findPostsByCategoryId(@Param("categoryId") Long categoryId);
+  Page<Post> findPostsByCategoryId(@Param("categoryId") Long categoryId, Pageable pageable);
 }
 
 

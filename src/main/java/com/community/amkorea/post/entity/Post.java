@@ -70,7 +70,6 @@ public class Post extends BaseEntity {
 
   public void addCategory(PostCategory postCategory) {
     this.postCategory = postCategory;
-    postCategory.addPost(this);
   }
 
 }

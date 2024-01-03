@@ -9,5 +9,5 @@ public interface CustomPostRepository {
   Slice<Post> searchByTitle(Long postId, String title, Pageable pageable);
 
   @Transactional
-  void UpdateViews(Long id, int views);
+  void updateViews(Long id, int views);
 }
