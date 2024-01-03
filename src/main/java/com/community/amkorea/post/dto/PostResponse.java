@@ -21,6 +21,7 @@ public class PostResponse {
   private int views;
   private int likeCount;
   private LocalDateTime createdAt;
+  private Long categoryId;
 
   public static PostResponse fromEntity(Post post) {
     return PostResponse.builder()
@@ -31,6 +32,7 @@ public class PostResponse {
         .views(post.getViews())
         .likeCount(post.getLikeCount())
         .createdAt(post.getCreatedAt())
+        .categoryId(post.getPostCategory().getId())
         .build();
   }
 }

@@ -1,6 +1,7 @@
 package com.community.amkorea.post.service.impl;
 
 import static com.community.amkorea.global.exception.ErrorCode.EMAIL_NOT_FOUND;
+import static com.community.amkorea.global.exception.ErrorCode.POST_CATEGORY_NOT_FOUND;
 import static com.community.amkorea.global.exception.ErrorCode.POST_NOT_FOUND;
 import static com.community.amkorea.global.exception.ErrorCode.POST_NOT_MINE;
 
@@ -11,6 +12,7 @@ import com.community.amkorea.member.repository.MemberRepository;
 import com.community.amkorea.post.dto.PostRequest;
 import com.community.amkorea.post.dto.PostResponse;
 import com.community.amkorea.post.entity.Post;
+import com.community.amkorea.post.repository.PostCategoryRepository;
 import com.community.amkorea.post.repository.PostRepository;
 import com.community.amkorea.post.service.PostService;
 import jakarta.servlet.http.HttpServletRequest;
@@ -35,7 +37,6 @@ public class PostServiceImpl implements PostService {
   private final PostCategoryRepository postCategoryRepository;
 
   private final RedisService redisService;
-
   private static final String VIEW_PREFIX = "view: ";
 
   @Override
@@ -44,6 +45,11 @@ public class PostServiceImpl implements PostService {
     Post post = requestDto.toEntity();
     Member member = getMember(username);
     member.addPost(post);
+
+    postCategoryRepository.findByName(requestDto.getCategory())
+        .ifPresentOrElse(post::addCategory,
+            () -> { throw new CustomException(POST_CATEGORY_NOT_FOUND);});
+
     return PostResponse.fromEntity(postRepository.save(post));
   }
 

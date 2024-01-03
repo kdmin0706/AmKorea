@@ -35,6 +35,7 @@ public enum ErrorCode {
   USER_NOT_FOUND(HttpStatus.NOT_FOUND, "존재하지 않는 회원입니다."),
   EMAIL_NOT_FOUND(HttpStatus.NOT_FOUND, "존재하지 않는 이메일입니다"),
   POST_NOT_FOUND(HttpStatus.NOT_FOUND, "존재하지 않는 게시글입니다"),
+  POST_CATEGORY_NOT_FOUND(HttpStatus.NOT_FOUND, "존재하지 않는 게시글 카테고리입니다"),
 
 
   /**

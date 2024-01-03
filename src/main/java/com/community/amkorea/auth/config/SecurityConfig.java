@@ -74,7 +74,8 @@ public class SecurityConfig {
 
   private RequestMatcher[] requestHasRoleAdmin() {
     List<RequestMatcher> requestMatchers = List.of(
-        antMatcher("/api/post/category/**")
+        antMatcher(POST,"/api/post/category/**"),
+        antMatcher(PUT,"/api/post/category/**")
     );
 
     return requestMatchers.toArray(RequestMatcher[]::new);

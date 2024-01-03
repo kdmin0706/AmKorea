@@ -12,12 +12,15 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor
 public class PostRequest {
-  @NotBlank
+  @NotBlank(message = "제목을 입력해주세요")
   private String title;
 
-  @NotBlank
+  @NotBlank(message = "내용을 입력해주세요")
   @Size(max = 500)
   private String content;
+
+  @NotBlank(message = "카테고리를 입력해주세요")
+  private String category;
 
   public Post toEntity() {
     return Post.builder()
