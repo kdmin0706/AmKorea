@@ -19,58 +19,32 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import lombok.Setter;
 
-@Getter
-@Setter
-@Builder
 @Entity
+@Getter
+@Builder
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-@AllArgsConstructor
-public class Post extends BaseEntity {
+@AllArgsConstructor(access = AccessLevel.PROTECTED)
+public class PostCategory extends BaseEntity {
   @Id
   @GeneratedValue(strategy = GenerationType.IDENTITY)
   private Long id;
-
-  @Column(nullable = false)
-  private String title;
-
-  @Column(nullable = false)
-  private String content;
-
-  @Column(nullable = false)
-  private int views;
 
   @ManyToOne(fetch = FetchType.LAZY)
   @JoinColumn(name = "member_id")
   private Member member;
 
   @Column(nullable = false)
-  private int likeCount;
+  private String name;
 
-  @Builder.Default
-  @OneToMany(mappedBy = "post", cascade = CascadeType.ALL, orphanRemoval = true)
-  private List<PostLike> postLikeList = new ArrayList<>();
+  @OneToMany(mappedBy = "postCategory", cascade = CascadeType.ALL)
+  private List<Post> postList = new ArrayList<>();
 
-  @ManyToOne(fetch = FetchType.LAZY)
-  @JoinColumn(name = "category_id")
-  private PostCategory postCategory;
-
-  public void updateLikeCount() {
-    this.likeCount = this.postLikeList.size();
+  public void addPost(Post post) {
+    this.postList.add(post);
   }
 
-  public void addPostLike(PostLike postLike) {
-    this.postLikeList.add(postLike);
+  public void changeCategoryName(String name) {
+    this.name = name;
   }
-
-  public void removePostLike(PostLike postLike) {
-    this.postLikeList.remove(postLike);
-  }
-
-  public void addCategory(PostCategory postCategory) {
-    this.postCategory = postCategory;
-    postCategory.addPost(this);
-  }
-
 }

@@ -38,3 +38,6 @@ spring:
     secret: 1a9339739d1c6f0df7e32b395fab1206112ec471d496f2ac6695c73d3d8d0d16
     access-token-expire-time: 1800000 # 30분 밀리초
     refresh-token-expire-time: 432000000 # 5일 밀리초
+
+  scheduler:
+    refresh-time : "0 0/5 * * * *"  #5분마다 DB 업데이트

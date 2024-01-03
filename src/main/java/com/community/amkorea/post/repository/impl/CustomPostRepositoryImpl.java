@@ -6,6 +6,7 @@ import com.community.amkorea.post.entity.Post;
 import com.community.amkorea.post.repository.CustomPostRepository;
 import com.querydsl.core.types.dsl.BooleanExpression;
 import com.querydsl.jpa.impl.JPAQueryFactory;
+import jakarta.persistence.EntityManager;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Pageable;
@@ -16,6 +17,7 @@ import org.springframework.data.domain.SliceImpl;
 public class CustomPostRepositoryImpl implements CustomPostRepository {
 
   private final JPAQueryFactory jpaQueryFactory;
+  private final EntityManager entityManager;
 
   @Override
   public Slice<Post> searchByTitle(Long postId, String title, Pageable pageable) {
@@ -24,12 +26,27 @@ public class CustomPostRepositoryImpl implements CustomPostRepository {
             ltPostId(postId), //첫번째 페이지 조회 시 ltPostId == null 처리
             post.title.contains(title)
         )
-        .orderBy(post.id.desc())
+        .orderBy(
+            post.id.desc(),
+            post.views.desc(),
+            post.likeCount.desc()
+        )
         .limit(pageable.getPageSize() + 1)
         .fetch();
 
     // 무한 스크롤 처리
     return checkLastPage(pageable, postList);
+  }
+
+  @Override
+  public void UpdateViews(Long id, int views) {
+    jpaQueryFactory.update(post)
+        .set(post.views, views)
+        .where(post.id.eq(id).and(post.views.ne(views)))
+        .execute();
+
+    entityManager.flush();
+    entityManager.clear();
   }
 
   /**

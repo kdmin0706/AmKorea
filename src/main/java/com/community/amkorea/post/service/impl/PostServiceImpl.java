@@ -1,30 +1,43 @@
 package com.community.amkorea.post.service.impl;
 
 import static com.community.amkorea.global.exception.ErrorCode.EMAIL_NOT_FOUND;
+import static com.community.amkorea.global.exception.ErrorCode.POST_CATEGORY_NOT_FOUND;
 import static com.community.amkorea.global.exception.ErrorCode.POST_NOT_FOUND;
 import static com.community.amkorea.global.exception.ErrorCode.POST_NOT_MINE;
 
 import com.community.amkorea.global.exception.CustomException;
+import com.community.amkorea.global.service.RedisService;
 import com.community.amkorea.member.entity.Member;
 import com.community.amkorea.member.repository.MemberRepository;
 import com.community.amkorea.post.dto.PostRequest;
 import com.community.amkorea.post.dto.PostResponse;
 import com.community.amkorea.post.entity.Post;
+import com.community.amkorea.post.repository.PostCategoryRepository;
 import com.community.amkorea.post.repository.PostRepository;
 import com.community.amkorea.post.service.PostService;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpSession;
+import java.util.Set;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Slice;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+@Slf4j
 @Service
 @RequiredArgsConstructor
 public class PostServiceImpl implements PostService {
 
   private final PostRepository postRepository;
   private final MemberRepository memberRepository;
+  private final PostCategoryRepository postCategoryRepository;
+
+  private final RedisService redisService;
+  private static final String VIEW_PREFIX = "view: ";
 
   @Override
   @Transactional
@@ -32,6 +45,11 @@ public class PostServiceImpl implements PostService {
     Post post = requestDto.toEntity();
     Member member = getMember(username);
     member.addPost(post);
+
+    postCategoryRepository.findByName(requestDto.getCategory())
+        .ifPresentOrElse(post::addCategory,
+            () -> { throw new CustomException(POST_CATEGORY_NOT_FOUND);});
+
     return PostResponse.fromEntity(postRepository.save(post));
   }
 
@@ -43,6 +61,11 @@ public class PostServiceImpl implements PostService {
 
     validationPost(post, member);
 
+    //redis에 조회 데이터가 있는 경우 삭제
+    if (redisService.getData(VIEW_PREFIX + id) != null) {
+      redisService.deleteData(VIEW_PREFIX + id);
+    }
+    
     member.removePost(post);
     postRepository.delete(post);
   }
@@ -87,8 +110,8 @@ public class PostServiceImpl implements PostService {
 
   @Override
   @Transactional(readOnly = true)
-  public Page<PostResponse> searchContent(String content, Pageable pageable) {
-    return postRepository.findAllByContentContaining(content, pageable).map(PostResponse::fromEntity);
+  public Page<PostResponse> searchContent(String name, Pageable pageable) {
+    return postRepository.findAllByContentContaining(name, pageable).map(PostResponse::fromEntity);
   }
 
   @Override
@@ -97,8 +120,47 @@ public class PostServiceImpl implements PostService {
     return PostResponse.fromEntity(getPost(id));
   }
 
+  @Override
+  @Transactional
+  public PostResponse readPost(Long id, HttpServletRequest request) {
+    Post post = getPost(id);
+
+    HttpSession session = request.getSession();
+
+    //클라이언트의 세션에서 중복 조회 여부 확인
+    Boolean hasRead = (Boolean) session.getAttribute("readPost: " + id);
+
+    if (hasRead == null || !hasRead) {
+
+      //중복 조회 여부를 세션에 저장
+      session.setAttribute("readPost: " + id, true);
+
+      //데이터 증가
+      redisService.increaseData(VIEW_PREFIX + id);
+
+    } else {
+      log.info("중복 요청 발생으로 인한 조회수 미반영");
+    }
+
+    return PostResponse.fromEntity(post);
+  }
+
   private Post getPost(Long id) {
     return postRepository.findById(id).orElseThrow(() -> new CustomException(POST_NOT_FOUND));
   }
 
+  @Scheduled(cron = "${spring.scheduler.refresh-time}")
+  public void updateViewCountToDB() {
+    Set<String> viewCountKeys = redisService.hasKeys(VIEW_PREFIX + "*");
+
+    if (viewCountKeys != null) {
+      for (String key : viewCountKeys) {
+        Long postId = Long.parseLong(key.split(": ")[1]);
+        int views = Integer.parseInt(redisService.getData(key));
+
+        //DB에 데이터 반영
+        postRepository.UpdateViews(postId, views);
+      }
+    }
+  }
 }
