@@ -49,6 +49,7 @@ public class SecurityConfig {
             auth -> auth
                 .requestMatchers(requestHasRoleUser()).hasRole("USER")
                 .requestMatchers(requestHasRoleAdmin()).hasRole("ADMIN")
+                .requestMatchers(requestHasAnyRoleUserAdmin()).hasAnyRole("USER", "ADMIN")
                 .anyRequest().permitAll()
         )
         .exceptionHandling(configurer -> {
@@ -67,17 +68,26 @@ public class SecurityConfig {
         antMatcher(PUT, "/api/post"),
         antMatcher(DELETE, "/api/post"),
         antMatcher(POST, "/api/post/like"),
-        antMatcher(POST, "/api/post/unlike")
+        antMatcher(POST, "/api/post/unlike"),
+        antMatcher(POST, "/api/comment"),
+        antMatcher(PUT, "/api/comment")
     );
     return requestMatchers.toArray(RequestMatcher[]::new);
   }
 
   private RequestMatcher[] requestHasRoleAdmin() {
     List<RequestMatcher> requestMatchers = List.of(
-        antMatcher(POST,"/api/post/category/**"),
-        antMatcher(PUT,"/api/post/category/**")
+        antMatcher(POST,"/api/post/category"),
+        antMatcher(PUT,"/api/post/category")
     );
 
+    return requestMatchers.toArray(RequestMatcher[]::new);
+  }
+
+  private RequestMatcher[] requestHasAnyRoleUserAdmin() {
+    List<RequestMatcher> requestMatchers = List.of(
+        antMatcher(DELETE, "/api/comment")
+    );
     return requestMatchers.toArray(RequestMatcher[]::new);
   }
 

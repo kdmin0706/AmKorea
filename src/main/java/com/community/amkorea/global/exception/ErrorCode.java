@@ -18,6 +18,8 @@ public enum ErrorCode {
   WRITE_NOT_YOURSELF(HttpStatus.BAD_REQUEST, "본인이 작성하지 않았습니다."),
   POST_ALREADY_LIKE(HttpStatus.BAD_REQUEST, "현재 게시물은 좋아요가 눌려있습니다."),
   POST_ALREADY_UNLIKE(HttpStatus.BAD_REQUEST, "현재 게시물은 좋아요 상태가 아닙니다."),
+  COMMENT_ALREADY_LIKE(HttpStatus.BAD_REQUEST, "현재 댓글은 좋아요가 눌려있습니다."),
+  COMMENT_ALREADY_UNLIKE(HttpStatus.BAD_REQUEST, "현재 댓글은 좋아요 상태가 아닙니다."),
 
   /**
    * 401 Unauthorized

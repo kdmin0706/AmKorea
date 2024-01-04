@@ -1,5 +1,6 @@
 package com.community.amkorea.post.entity;
 
+import com.community.amkorea.comment.entity.Comment;
 import com.community.amkorea.global.entity.BaseEntity;
 import com.community.amkorea.member.entity.Member;
 import jakarta.persistence.CascadeType;
@@ -56,6 +57,10 @@ public class Post extends BaseEntity {
   @JoinColumn(name = "category_id")
   private PostCategory postCategory;
 
+  @Builder.Default
+  @OneToMany(mappedBy = "post", cascade = CascadeType.ALL, orphanRemoval = true)
+  private List<Comment> comments = new ArrayList<>();
+
   public void updateLikeCount() {
     this.likeCount = this.postLikeList.size();
   }
@@ -72,4 +77,7 @@ public class Post extends BaseEntity {
     this.postCategory = postCategory;
   }
 
+  public void addComment(Comment comment) {
+    this.comments.add(comment);
+  }
 }
