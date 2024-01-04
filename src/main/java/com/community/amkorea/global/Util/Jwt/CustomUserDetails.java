@@ -7,21 +7,21 @@ import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
-public record CustomUserDetails(CustomUserDto memberDto) implements UserDetails {
+public record CustomUserDetails(CustomUserDto customUserDto) implements UserDetails {
 
   @Override
   public Collection<? extends GrantedAuthority> getAuthorities() {
-    return List.of(new SimpleGrantedAuthority(memberDto.getRoleType()));
+    return List.of(new SimpleGrantedAuthority(customUserDto.getRoleType()));
   }
 
   @Override
   public String getPassword() {
-    return memberDto.getPassword();
+    return customUserDto.getPassword();
   }
 
   @Override
   public String getUsername() {
-    return memberDto.getEmail();
+    return customUserDto.getEmail();
   }
 
   @Override

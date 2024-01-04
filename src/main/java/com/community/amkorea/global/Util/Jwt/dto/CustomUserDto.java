@@ -13,6 +13,7 @@ import lombok.Setter;
 @NoArgsConstructor
 @AllArgsConstructor
 public class CustomUserDto {
+  private Long id;
 
   private String email;
 
@@ -22,6 +23,7 @@ public class CustomUserDto {
 
   public static CustomUserDto fromEntity(Member member) {
     return CustomUserDto.builder()
+        .id(member.getId())
         .email(member.getEmail())
         .password(member.getPassword())
         .roleType(member.getRoleType().getCode())
