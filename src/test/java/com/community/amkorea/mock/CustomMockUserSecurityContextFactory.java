@@ -14,9 +14,10 @@ public class CustomMockUserSecurityContextFactory implements
   @Override
   public SecurityContext createSecurityContext(CustomMockUser annotation) {
     String email = annotation.email();
+    String role = annotation.role();
 
     Authentication auth = new UsernamePasswordAuthenticationToken(email, "",
-        List.of(new SimpleGrantedAuthority("ROLE_ADMIN")));
+        List.of(new SimpleGrantedAuthority(role)));
 
     SecurityContext context = SecurityContextHolder.getContext();
     context.setAuthentication(auth);

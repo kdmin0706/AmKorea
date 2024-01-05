@@ -9,4 +9,6 @@ import org.springframework.security.test.context.support.WithSecurityContext;
 public @interface CustomMockUser {
 
   String email() default "test@test.com";
+
+  String role() default "ROLE_USER";
 }

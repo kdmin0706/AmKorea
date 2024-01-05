@@ -4,6 +4,8 @@ package com.community.amkorea.member.service;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.BDDMockito.given;
 
+import com.community.amkorea.global.exception.CustomException;
+import com.community.amkorea.global.exception.ErrorCode;
 import com.community.amkorea.member.dto.MemberDto;
 import com.community.amkorea.member.dto.UpdateMemberResponse;
 import com.community.amkorea.member.entity.Member;
@@ -81,4 +83,18 @@ class MemberServiceImplTest {
     Assertions.assertEquals(update.getNickname(), memberDto.getNickname());
   }
 
+  @Test
+  @DisplayName("회원 정보 조회 실패")
+  void fail_findMember() {
+    //given
+    given(memberRepository.findByEmail(anyString()))
+        .willReturn(Optional.empty());
+
+    //when
+    CustomException customException = Assertions.assertThrows(CustomException.class,
+        () -> memberService.findMember("test@test.com"));
+
+    //then
+    Assertions.assertEquals(ErrorCode.USER_NOT_FOUND, customException.getErrorCode());
+  }
 }

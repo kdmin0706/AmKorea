@@ -14,16 +14,7 @@ POST http://localhost:8080/api/auth/signIn
 Content-Type: application/json
 
 {
-  "email": "testtest1@gmail.com",
-  "password": "12345"
-}
-
-### 로그인2
-POST http://localhost:8080/api/auth/signIn
-Content-Type: application/json
-
-{
-  "email": "testtest1@test.com",
+  "email": "testtest4@gmail.com",
   "password": "12345"
 }
 
