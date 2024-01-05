@@ -1,5 +1,6 @@
 package com.community.amkorea.post.entity;
 
+import com.community.amkorea.aws.entity.Image;
 import com.community.amkorea.comment.entity.Comment;
 import com.community.amkorea.global.entity.BaseEntity;
 import com.community.amkorea.member.entity.Member;
@@ -61,6 +62,10 @@ public class Post extends BaseEntity {
   @OneToMany(mappedBy = "post", cascade = CascadeType.ALL, orphanRemoval = true)
   private List<Comment> comments = new ArrayList<>();
 
+  @Builder.Default
+  @OneToMany(mappedBy = "post", cascade = CascadeType.ALL, orphanRemoval = true)
+  private List<Image> images = new ArrayList<>();
+
   public void updateLikeCount() {
     this.likeCount = this.postLikeList.size();
   }
@@ -79,5 +84,10 @@ public class Post extends BaseEntity {
 
   public void addComment(Comment comment) {
     this.comments.add(comment);
+  }
+
+  public void addImage(Image image) {
+    this.images.add(image);
+    image.mappingPost(this);
   }
 }

@@ -5,6 +5,9 @@ import static com.community.amkorea.global.exception.ErrorCode.POST_CATEGORY_NOT
 import static com.community.amkorea.global.exception.ErrorCode.POST_NOT_FOUND;
 import static com.community.amkorea.global.exception.ErrorCode.WRITE_NOT_YOURSELF;
 
+import com.community.amkorea.aws.dto.S3ImageDto;
+import com.community.amkorea.aws.entity.Image;
+import com.community.amkorea.aws.service.AWSS3Service;
 import com.community.amkorea.global.exception.CustomException;
 import com.community.amkorea.global.service.RedisService;
 import com.community.amkorea.member.entity.Member;
@@ -17,6 +20,7 @@ import com.community.amkorea.post.repository.PostRepository;
 import com.community.amkorea.post.service.PostService;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpSession;
+import java.util.List;
 import java.util.Map;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -26,6 +30,7 @@ import org.springframework.data.domain.Slice;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.multipart.MultipartFile;
 
 @Slf4j
 @Service
@@ -35,22 +40,33 @@ public class PostServiceImpl implements PostService {
   private final PostRepository postRepository;
   private final MemberRepository memberRepository;
   private final PostCategoryRepository postCategoryRepository;
-
   private final RedisService redisService;
+  private final AWSS3Service awss3Service;
+
   private static final String VIEW_HASH_KEY = "postViews";
 
   @Override
   @Transactional
-  public PostResponse createPost(PostRequest requestDto, String username) {
-    Post post = requestDto.toEntity();
+  public PostResponse createPost(PostRequest requestDto, String username, List<MultipartFile> files) {
     Member member = getMember(username);
-    member.addPost(post);
+    Post post = uploadS3Image(requestDto, files);
 
+    member.addPost(post);
     postCategoryRepository.findByName(requestDto.getCategory())
         .ifPresentOrElse(post::addCategory,
             () -> { throw new CustomException(POST_CATEGORY_NOT_FOUND);});
 
     return PostResponse.fromEntity(postRepository.save(post));
+  }
+
+  private Post uploadS3Image(PostRequest requestDto, List<MultipartFile> multipartFiles) {
+    Post post = requestDto.toEntity();
+
+    List<S3ImageDto> list = multipartFiles.stream().map(awss3Service::uploadFile).toList();
+    List<Image> imageList = list.stream().map(S3ImageDto::toEntity).toList();
+
+    imageList.forEach(post::addImage);
+    return post;
   }
 
   @Override
@@ -61,8 +77,13 @@ public class PostServiceImpl implements PostService {
 
     validationPost(post, member);
 
+    deleteImageS3(post.getImages());
     member.removePost(post);
     postRepository.delete(post);
+  }
+
+  private void deleteImageS3(List<Image> images) {
+    images.forEach(e -> awss3Service.deleteFile(e.getFileName()));
   }
 
   @Override
