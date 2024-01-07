@@ -3,16 +3,18 @@ package com.community.amkorea.post.service;
 import com.community.amkorea.post.dto.PostRequest;
 import com.community.amkorea.post.dto.PostResponse;
 import jakarta.servlet.http.HttpServletRequest;
+import java.util.List;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Slice;
+import org.springframework.web.multipart.MultipartFile;
 
 public interface PostService {
 
   /**
    * 게시글 생성
    */
-  PostResponse createPost(PostRequest requestDto, String username);
+  PostResponse createPost(PostRequest requestDto, String username, List<MultipartFile> files);
 
   /**
    * 게시글 삭제

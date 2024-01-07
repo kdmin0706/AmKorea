@@ -39,10 +39,10 @@ public class CustomPostRepositoryImpl implements CustomPostRepository {
   }
 
   @Override
-  public void UpdateViews(Long id, int views) {
+  public void updateViews(Long id, int views) {
     jpaQueryFactory.update(post)
-        .set(post.views, views)
-        .where(post.id.eq(id).and(post.views.ne(views)))
+        .set(post.views, post.views.add(views))
+        .where(post.id.eq(id))
         .execute();
 
     entityManager.flush();

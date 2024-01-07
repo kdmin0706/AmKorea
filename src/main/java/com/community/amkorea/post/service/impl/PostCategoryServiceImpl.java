@@ -11,9 +11,9 @@ import com.community.amkorea.post.entity.PostCategory;
 import com.community.amkorea.post.repository.PostCategoryRepository;
 import com.community.amkorea.post.repository.PostRepository;
 import com.community.amkorea.post.service.PostCategoryService;
-import java.util.List;
-import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -49,12 +49,12 @@ public class PostCategoryServiceImpl implements PostCategoryService {
 
   @Override
   @Transactional(readOnly = true)
-  public List<PostResponse> getCategory(Long id) {
+  public Page<PostResponse> getCategory(Long id, Pageable pageable) {
+
     postCategoryRepository.findById(id)
         .orElseThrow(() -> new CustomException(ErrorCode.POST_CATEGORY_NOT_FOUND));
 
-    return postRepository.findPostsByCategoryId(id).stream()
-        .map(PostResponse::fromEntity).collect(Collectors.toList());
+    return postRepository.findPostsByCategoryId(id, pageable).map(PostResponse::fromEntity);
   }
 
 }

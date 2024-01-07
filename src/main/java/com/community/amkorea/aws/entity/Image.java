@@ -1,7 +1,7 @@
-package com.community.amkorea.post.entity;
+package com.community.amkorea.aws.entity;
 
 import com.community.amkorea.global.entity.BaseEntity;
-import com.community.amkorea.member.entity.Member;
+import com.community.amkorea.post.entity.Post;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
@@ -21,19 +21,26 @@ import lombok.NoArgsConstructor;
 @Builder
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor(access = AccessLevel.PROTECTED)
-public class PostCategory extends BaseEntity {
+public class Image extends BaseEntity {
   @Id
   @GeneratedValue(strategy = GenerationType.IDENTITY)
   private Long id;
 
-  @ManyToOne(fetch = FetchType.LAZY)
-  @JoinColumn(name = "member_id")
-  private Member member;
+  @Column(nullable = false)
+  private String url;
 
   @Column(nullable = false)
-  private String name;
+  private String fileName;
 
-  public void changeCategoryName(String name) {
-    this.name = name;
+  @Column(nullable = false)
+  private Long size;
+
+  @ManyToOne(fetch = FetchType.LAZY)
+  @JoinColumn(name = "post_id")
+  private Post post;
+
+  public void mappingPost(Post post) {
+    this.post = post;
   }
+
 }

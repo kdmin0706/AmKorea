@@ -3,8 +3,11 @@ package com.community.amkorea.post.service.impl;
 import static com.community.amkorea.global.exception.ErrorCode.EMAIL_NOT_FOUND;
 import static com.community.amkorea.global.exception.ErrorCode.POST_CATEGORY_NOT_FOUND;
 import static com.community.amkorea.global.exception.ErrorCode.POST_NOT_FOUND;
-import static com.community.amkorea.global.exception.ErrorCode.POST_NOT_MINE;
+import static com.community.amkorea.global.exception.ErrorCode.WRITE_NOT_YOURSELF;
 
+import com.community.amkorea.aws.dto.S3ImageDto;
+import com.community.amkorea.aws.entity.Image;
+import com.community.amkorea.aws.service.AWSS3Service;
 import com.community.amkorea.global.exception.CustomException;
 import com.community.amkorea.global.service.RedisService;
 import com.community.amkorea.member.entity.Member;
@@ -17,7 +20,8 @@ import com.community.amkorea.post.repository.PostRepository;
 import com.community.amkorea.post.service.PostService;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpSession;
-import java.util.Set;
+import java.util.List;
+import java.util.Map;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
@@ -26,6 +30,7 @@ import org.springframework.data.domain.Slice;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.multipart.MultipartFile;
 
 @Slf4j
 @Service
@@ -35,22 +40,33 @@ public class PostServiceImpl implements PostService {
   private final PostRepository postRepository;
   private final MemberRepository memberRepository;
   private final PostCategoryRepository postCategoryRepository;
-
   private final RedisService redisService;
-  private static final String VIEW_PREFIX = "view: ";
+  private final AWSS3Service awss3Service;
+
+  private static final String VIEW_HASH_KEY = "postViews";
 
   @Override
   @Transactional
-  public PostResponse createPost(PostRequest requestDto, String username) {
-    Post post = requestDto.toEntity();
+  public PostResponse createPost(PostRequest requestDto, String username, List<MultipartFile> files) {
     Member member = getMember(username);
-    member.addPost(post);
+    Post post = uploadS3Image(requestDto, files);
 
+    member.addPost(post);
     postCategoryRepository.findByName(requestDto.getCategory())
         .ifPresentOrElse(post::addCategory,
             () -> { throw new CustomException(POST_CATEGORY_NOT_FOUND);});
 
     return PostResponse.fromEntity(postRepository.save(post));
+  }
+
+  private Post uploadS3Image(PostRequest requestDto, List<MultipartFile> multipartFiles) {
+    Post post = requestDto.toEntity();
+
+    List<S3ImageDto> list = multipartFiles.stream().map(awss3Service::uploadFile).toList();
+    List<Image> imageList = list.stream().map(S3ImageDto::toEntity).toList();
+
+    imageList.forEach(post::addImage);
+    return post;
   }
 
   @Override
@@ -61,13 +77,13 @@ public class PostServiceImpl implements PostService {
 
     validationPost(post, member);
 
-    //redis에 조회 데이터가 있는 경우 삭제
-    if (redisService.getData(VIEW_PREFIX + id) != null) {
-      redisService.deleteData(VIEW_PREFIX + id);
-    }
-    
+    deleteImageS3(post.getImages());
     member.removePost(post);
     postRepository.delete(post);
+  }
+
+  private void deleteImageS3(List<Image> images) {
+    images.forEach(e -> awss3Service.deleteFile(e.getFileName()));
   }
 
   @Override
@@ -92,7 +108,7 @@ public class PostServiceImpl implements PostService {
   private void validationPost(Post post, Member member) {
     //본인의 게시물이 맞는지 확인
     if (!post.getMember().getEmail().equals(member.getEmail())) {
-      throw new CustomException(POST_NOT_MINE);
+      throw new CustomException(WRITE_NOT_YOURSELF);
     }
   }
 
@@ -136,7 +152,7 @@ public class PostServiceImpl implements PostService {
       session.setAttribute("readPost: " + id, true);
 
       //데이터 증가
-      redisService.increaseData(VIEW_PREFIX + id);
+      redisService.increaseHashData(VIEW_HASH_KEY, id.toString());
 
     } else {
       log.info("중복 요청 발생으로 인한 조회수 미반영");
@@ -151,16 +167,18 @@ public class PostServiceImpl implements PostService {
 
   @Scheduled(cron = "${spring.scheduler.refresh-time}")
   public void updateViewCountToDB() {
-    Set<String> viewCountKeys = redisService.hasKeys(VIEW_PREFIX + "*");
+    Map<Object, Object> map = redisService.hasHashKeys(VIEW_HASH_KEY);
 
-    if (viewCountKeys != null) {
-      for (String key : viewCountKeys) {
-        Long postId = Long.parseLong(key.split(": ")[1]);
-        int views = Integer.parseInt(redisService.getData(key));
+    for (Map.Entry<Object, Object> entry : map.entrySet()) {
+      Long postId = Long.parseLong(entry.getKey().toString());
+      int views = Integer.parseInt(entry.getValue().toString());
 
-        //DB에 데이터 반영
-        postRepository.UpdateViews(postId, views);
-      }
+      //DB에 데이터 반영
+      postRepository.updateViews(postId, views);
+
+      //데이터 적용 후 삭제
+      redisService.deleteHashKey(VIEW_HASH_KEY, postId.toString());
     }
   }
+
 }

@@ -5,6 +5,7 @@ import com.community.amkorea.post.dto.PostRequest;
 import com.community.amkorea.post.service.PostService;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
+import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
@@ -20,7 +21,9 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RequestPart;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.multipart.MultipartFile;
 
 @RestController
 @RequestMapping("/api")
@@ -30,9 +33,10 @@ public class PostController {
   private final PostService postService;
 
   @PostMapping("/post")
-  public ResponseEntity<?> create(@Valid @RequestBody PostRequest requestDto,
-      @LoginUser String username) {
-    return ResponseEntity.status(HttpStatus.CREATED).body(postService.createPost(requestDto, username));
+  public ResponseEntity<?> create(@Valid @RequestPart(value = "request") PostRequest requestDto,
+                                  @LoginUser String username,
+                                  @RequestPart(value = "image", required = false) List<MultipartFile> files) {
+    return ResponseEntity.status(HttpStatus.CREATED).body(postService.createPost(requestDto, username, files));
   }
 
   @DeleteMapping("/post/{id}")

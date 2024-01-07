@@ -1,7 +1,7 @@
 ### 게시글 생성
 POST http://localhost:8080/api/post
 Content-Type: application/json
-Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJpYXQiOjE3MDQyNDk2NTAsInN1YiI6ImFjY2Vzcy10b2tlbiIsInJvbGUiOiJST0xFX1VTRVIiLCJ1c2VySWQiOiJ0ZXN0dGVzdDJAZ21haWwuY29tIiwiZXhwIjoxNzA0MjUxNDUwfQ.8e9yw1zzRI9V5uK_YsK0CGCoEsUgAf2OONxkqeCb4Bo
+#Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJpYXQiOjE3MDQyNDk2NTAsInN1YiI6ImFjY2Vzcy10b2tlbiIsInJvbGUiOiJST0xFX1VTRVIiLCJ1c2VySWQiOiJ0ZXN0dGVzdDJAZ21haWwuY29tIiwiZXhwIjoxNzA0MjUxNDUwfQ.8e9yw1zzRI9V5uK_YsK0CGCoEsUgAf2OONxkqeCb4Bo
 
 {
   "title": "제목4",
@@ -29,7 +29,7 @@ GET http://localhost:8080/api/post/searchAll
 Content-Type: application/json
 
 ### 게시글 조회
-GET http://localhost:8080/api/post/detail/3
+GET http://localhost:8080/api/post/detail/2
 Content-Type: application/json
 
 ### 게시글 단건 검색
