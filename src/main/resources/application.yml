@@ -31,6 +31,8 @@ spring:
     redis:
       host: localhost
       port: 6379
+    soccer:
+      apiKey: d4b56e551cf677a86319993969f36d61d1f7678c9df9cbe736d0e1187f860d66
 
   jwt:
     header: Authorization
