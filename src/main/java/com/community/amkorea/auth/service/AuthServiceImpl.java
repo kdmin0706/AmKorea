@@ -5,6 +5,7 @@ import static com.community.amkorea.global.exception.ErrorCode.INVALID_TOKEN;
 import static com.community.amkorea.global.exception.ErrorCode.PASSWORD_NOT_MATCH;
 
 import com.community.amkorea.auth.dto.LogoutDto;
+import com.community.amkorea.auth.dto.ReissueDto;
 import com.community.amkorea.auth.dto.SignInDto;
 import com.community.amkorea.auth.dto.SignUpDto;
 import com.community.amkorea.global.Util.Jwt.TokenProvider;
@@ -15,7 +16,6 @@ import com.community.amkorea.global.service.RedisService;
 import com.community.amkorea.member.entity.Member;
 import com.community.amkorea.member.entity.enums.RoleType;
 import com.community.amkorea.member.repository.MemberRepository;
-import jakarta.servlet.http.HttpServletRequest;
 import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -100,17 +100,17 @@ public class AuthServiceImpl implements AuthService {
    * token 재발급
    */
   @Override
-  public TokenDto reissue(HttpServletRequest request) {
-    //1. HttpServletRequest 를 이용해서 redis 에 있는 refresh-token을 가져온다.
-    String data = redisService.getData(request.getHeader("accessToken"));
+  public TokenDto reissue(ReissueDto reissueDto) {
+    //1. redis 에 있는 refresh-token을 가져온다.
+    String data = redisService.getData(reissueDto.getAccessToken());
 
     //2. refresh-token exception check(null or invalid)
-    if (!StringUtils.hasText(data) || !data.equals(request.getHeader("refreshToken"))) {
+    if (!StringUtils.hasText(data) || !data.equals(reissueDto.getRefreshToken())) {
       throw new CustomException(INVALID_TOKEN);
     }
 
     //3. token 정보를 이용해서 UserDetails 확인
-    Authentication authentication = tokenProvider.getAuthentication(request.getHeader("accessToken"));
+    Authentication authentication = tokenProvider.getAuthentication(reissueDto.getAccessToken());
 
     //4. 기존 토큰 정보 삭제
     redisService.deleteData(data);
