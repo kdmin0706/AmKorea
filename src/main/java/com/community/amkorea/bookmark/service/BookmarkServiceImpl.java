@@ -39,7 +39,7 @@ public class BookmarkServiceImpl implements BookmarkService {
     Team team = teamRepository.findById(request.getTeamId())
         .orElseThrow(() -> new CustomException(TEAM_NOT_FOUND));
 
-    Bookmark bookmark = request.toEntity();
+    Bookmark bookmark = Bookmark.builder().build();
     bookmark.addMember(member);
     bookmark.addTeam(team);
 
