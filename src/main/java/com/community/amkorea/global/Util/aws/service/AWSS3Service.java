@@ -1,4 +1,4 @@
-package com.community.amkorea.aws.service;
+package com.community.amkorea.global.Util.aws.service;
 
 import static com.community.amkorea.global.exception.ErrorCode.INTERNAL_SERVER_ERROR;
 
@@ -7,7 +7,7 @@ import com.amazonaws.services.s3.model.AmazonS3Exception;
 import com.amazonaws.services.s3.model.CannedAccessControlList;
 import com.amazonaws.services.s3.model.ObjectMetadata;
 import com.amazonaws.services.s3.model.PutObjectRequest;
-import com.community.amkorea.aws.dto.S3ImageDto;
+import com.community.amkorea.global.Util.aws.dto.S3ImageDto;
 import com.community.amkorea.global.exception.CustomException;
 import java.io.IOException;
 import java.io.InputStream;

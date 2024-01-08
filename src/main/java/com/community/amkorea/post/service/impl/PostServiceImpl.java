@@ -5,9 +5,9 @@ import static com.community.amkorea.global.exception.ErrorCode.POST_CATEGORY_NOT
 import static com.community.amkorea.global.exception.ErrorCode.POST_NOT_FOUND;
 import static com.community.amkorea.global.exception.ErrorCode.WRITE_NOT_YOURSELF;
 
-import com.community.amkorea.aws.dto.S3ImageDto;
-import com.community.amkorea.aws.entity.Image;
-import com.community.amkorea.aws.service.AWSS3Service;
+import com.community.amkorea.global.Util.aws.dto.S3ImageDto;
+import com.community.amkorea.global.Util.aws.entity.Image;
+import com.community.amkorea.global.Util.aws.service.AWSS3Service;
 import com.community.amkorea.global.exception.CustomException;
 import com.community.amkorea.global.service.RedisService;
 import com.community.amkorea.member.entity.Member;
