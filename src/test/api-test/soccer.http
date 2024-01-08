@@ -1,0 +1,16 @@
+### 팀 조회
+GET http://localhost:8080/api/soccer/team?id=100
+Accept: application/json
+
+### 선수 조회
+GET http://localhost:8080/api/soccer/player?id=499838227&team=164
+Accept: application/json
+
+### 리그 팀 순위 조회
+GET http://localhost:8080/api/soccer/standing?league=PREMIER_LEAGUE
+Accept: application/json
+
+### Top 10 Scorer
+GET http://localhost:8080/api/soccer/scorer?league=SERIE_A
+Accept: application/json
+

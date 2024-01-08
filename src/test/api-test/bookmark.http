@@ -1,0 +1,19 @@
+### 북마크 등록
+POST http://localhost:8080/api/bookmark
+Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJpYXQiOjE3MDQ2NTk2OTEsInN1YiI6ImFjY2Vzcy10b2tlbiIsInJvbGUiOiJST0xFX1VTRVIiLCJ1c2VySWQiOiJ0ZXN0dGVzdDRAZ21haWwuY29tIiwiZXhwIjoxNzA0NjYxNDkxfQ.Ndr1afEM629yQPAkzAaGgcDn8Khp_eEZO2orsgf_TrY
+
+{
+  "teamId": "73"
+}
+
+### 북마크 삭제
+DELETE http://localhost:8080/api/bookmark?id=2
+Content-Type: application/json
+
+
+### 북마크 조회
+GET http://localhost:8080/api/bookmark
+Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJpYXQiOjE3MDQ2NTk2OTEsInN1YiI6ImFjY2Vzcy10b2tlbiIsInJvbGUiOiJST0xFX1VTRVIiLCJ1c2VySWQiOiJ0ZXN0dGVzdDRAZ21haWwuY29tIiwiZXhwIjoxNzA0NjYxNDkxfQ.Ndr1afEM629yQPAkzAaGgcDn8Khp_eEZO2orsgf_TrY
+
