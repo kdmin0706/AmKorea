@@ -1,5 +1,6 @@
 package com.community.amkorea.member.entity;
 
+import com.community.amkorea.bookmark.entity.Bookmark;
 import com.community.amkorea.global.entity.BaseEntity;
 import com.community.amkorea.member.entity.enums.RoleType;
 import com.community.amkorea.post.entity.Post;
@@ -60,6 +61,10 @@ public class Member extends BaseEntity {
   @OneToMany(mappedBy = "member", cascade = CascadeType.ALL, orphanRemoval = true)
   private List<PostLike> postLikes = new ArrayList<>();
 
+  @Builder.Default
+  @OneToMany(mappedBy = "member", cascade = CascadeType.ALL, orphanRemoval = true)
+  private List<Bookmark> bookmarks = new ArrayList<>();
+
   public void changeEmailAuth() {
     this.emailAuth = true;
   }
@@ -76,5 +81,9 @@ public class Member extends BaseEntity {
 
   public void addPostLike(PostLike postLike) {
     this.postLikes.add(postLike);
+  }
+
+  public void addBookmark(Bookmark bookmark) {
+    this.bookmarks.add(bookmark);
   }
 }
