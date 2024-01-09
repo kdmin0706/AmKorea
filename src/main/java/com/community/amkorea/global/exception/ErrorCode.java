@@ -15,6 +15,7 @@ public enum ErrorCode {
   PASSWORD_NOT_MATCH(HttpStatus.BAD_REQUEST, "비밀번호가 올바르지 않습니다."),
   INVALID_AUTH_CODE(HttpStatus.BAD_REQUEST, "인증번호가 올바르지 않습니다."),
   EMAIL_NOT_VERITY(HttpStatus.BAD_REQUEST, "이메일 인증이 되지 않았습니다."),
+  EMAIL_HAS_FAIL(HttpStatus.BAD_REQUEST, "이메일 발송이 실패했습니다."),
   WRITE_NOT_YOURSELF(HttpStatus.BAD_REQUEST, "본인이 작성하지 않았습니다."),
   POST_ALREADY_LIKE(HttpStatus.BAD_REQUEST, "현재 게시물은 좋아요가 눌려있습니다."),
   POST_ALREADY_UNLIKE(HttpStatus.BAD_REQUEST, "현재 게시물은 좋아요 상태가 아닙니다."),
