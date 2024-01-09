@@ -1,4 +1,4 @@
-package com.community.amkorea.aws.entity;
+package com.community.amkorea.global.Util.aws.entity;
 
 import com.community.amkorea.global.entity.BaseEntity;
 import com.community.amkorea.post.entity.Post;

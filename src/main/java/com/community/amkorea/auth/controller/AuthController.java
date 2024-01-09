@@ -1,13 +1,14 @@
 package com.community.amkorea.auth.controller;
 
 import com.community.amkorea.auth.dto.LogoutDto;
+import com.community.amkorea.auth.dto.ReissueDto;
 import com.community.amkorea.auth.dto.SignInDto;
 import com.community.amkorea.auth.dto.SignUpDto;
 import com.community.amkorea.auth.service.AuthService;
 import com.community.amkorea.global.Util.Mail.dto.SendMailRequest;
 import com.community.amkorea.global.Util.Mail.dto.VerifyMailRequest;
 import com.community.amkorea.global.Util.Mail.service.MailService;
-import jakarta.servlet.http.HttpServletRequest;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -53,8 +54,8 @@ public class AuthController {
   }
 
   @PostMapping("/reissue-token")
-  public ResponseEntity<?> reissue_token(HttpServletRequest httpServletRequest) {
-    return ResponseEntity.ok(authService.reissue(httpServletRequest));
+  public ResponseEntity<?> reissue_token(@Valid @RequestBody ReissueDto reissueDto) {
+    return ResponseEntity.ok(authService.reissue(reissueDto));
   }
 
 }

@@ -1,6 +1,6 @@
-package com.community.amkorea.aws.dto;
+package com.community.amkorea.global.Util.aws.dto;
 
-import com.community.amkorea.aws.entity.Image;
+import com.community.amkorea.global.Util.aws.entity.Image;
 
 public record S3ImageDto(
     String url,

@@ -6,8 +6,8 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.BDDMockito.given;
 
-import com.community.amkorea.aws.dto.S3ImageDto;
-import com.community.amkorea.aws.service.AWSS3Service;
+import com.community.amkorea.global.Util.aws.dto.S3ImageDto;
+import com.community.amkorea.global.Util.aws.service.AWSS3Service;
 import com.community.amkorea.global.exception.CustomException;
 import com.community.amkorea.global.exception.ErrorCode;
 import com.community.amkorea.member.entity.Member;

@@ -1,4 +1,4 @@
-package com.community.amkorea.aws.config;
+package com.community.amkorea.global.Util.aws.config;
 
 import com.amazonaws.auth.AWSCredentials;
 import com.amazonaws.auth.AWSStaticCredentialsProvider;

@@ -46,7 +46,7 @@ public class CommentController {
   }
 
   @GetMapping
-  public ResponseEntity<?> GetComment(@RequestParam("post") Long id,
+  public ResponseEntity<?> getComment(@RequestParam("post") Long id,
                                       @PageableDefault(sort = "id", direction = Direction.DESC) Pageable pageable) {
     return ResponseEntity.ok(commentService.getCommentList(id, pageable));
   }

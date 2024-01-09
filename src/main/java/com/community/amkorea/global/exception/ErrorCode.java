@@ -20,6 +20,9 @@ public enum ErrorCode {
   POST_ALREADY_UNLIKE(HttpStatus.BAD_REQUEST, "현재 게시물은 좋아요 상태가 아닙니다."),
   COMMENT_ALREADY_LIKE(HttpStatus.BAD_REQUEST, "현재 댓글은 좋아요가 눌려있습니다."),
   COMMENT_ALREADY_UNLIKE(HttpStatus.BAD_REQUEST, "현재 댓글은 좋아요 상태가 아닙니다."),
+  PLAYER_NOT_TEAM(HttpStatus.BAD_REQUEST, "해당 팀에 소속되어 있지 않은 선수입니다."),
+  LEAGUE_PARAM_NOT_MATCH(HttpStatus.BAD_REQUEST, "리그 정보가 알맞지 않습니다."),
+  ALREADY_REGISTERED(HttpStatus.BAD_REQUEST, "이미 등록되어있습니다."),
 
   /**
    * 401 Unauthorized
@@ -39,6 +42,9 @@ public enum ErrorCode {
   POST_NOT_FOUND(HttpStatus.NOT_FOUND, "존재하지 않는 게시글입니다"),
   POST_CATEGORY_NOT_FOUND(HttpStatus.NOT_FOUND, "존재하지 않는 게시글 카테고리입니다"),
   COMMENT_NOT_FOUND(HttpStatus.NOT_FOUND, "존재하지 않는 댓글입니다"),
+  TEAM_NOT_FOUND(HttpStatus.NOT_FOUND, "존재하지 않는 팀입니다"),
+  PLAYER_NOT_FOUND(HttpStatus.NOT_FOUND, "존재하지 않는 선수입니다"),
+  BOOKMARK_NOT_FOUND(HttpStatus.NOT_FOUND, "존재하지 않는 북마크입니다."),
 
 
   /**
@@ -50,7 +56,8 @@ public enum ErrorCode {
   /**
    * 500 Internal Server Error
    */
-  INTERNAL_SERVER_ERROR(HttpStatus.INTERNAL_SERVER_ERROR, "내부 서버 오류가 발생했습니다.");
+  INTERNAL_SERVER_ERROR(HttpStatus.INTERNAL_SERVER_ERROR, "내부 서버 오류가 발생했습니다."),
+  API_SERVER_ERROR(HttpStatus.INTERNAL_SERVER_ERROR, "API 로드시 오류가 발생했습니다.");
 
 
   private final HttpStatus httpStatus;
