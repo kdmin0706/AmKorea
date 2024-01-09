@@ -1,7 +1,7 @@
 package com.community.amkorea.post.entity;
 
-import com.community.amkorea.global.Util.aws.entity.Image;
 import com.community.amkorea.comment.entity.Comment;
+import com.community.amkorea.global.Util.aws.entity.Image;
 import com.community.amkorea.global.entity.BaseEntity;
 import com.community.amkorea.member.entity.Member;
 import jakarta.persistence.CascadeType;

@@ -1,6 +1,5 @@
 package com.community.amkorea.soccer.dto.api;
 
-import com.community.amkorea.soccer.dto.api.PlayerInfo;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import java.util.List;
 import lombok.AccessLevel;

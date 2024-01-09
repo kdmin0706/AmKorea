@@ -1,6 +1,5 @@
 package com.community.amkorea.soccer.dto.api;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.AccessLevel;
 import lombok.Getter;
@@ -39,10 +38,4 @@ public class PlayerInfo {
    */
   @JsonProperty("player_number")
   private String number;
-
-  /**
-   * 소속팀
-   */
-  @JsonIgnore
-  private String teamName;
 }
