@@ -4,9 +4,11 @@ import com.community.amkorea.global.exception.CustomException;
 import com.community.amkorea.global.exception.ErrorCode;
 import com.community.amkorea.soccer.config.SoccerApi;
 import com.community.amkorea.soccer.dto.PlayerDto;
-import com.community.amkorea.soccer.dto.StandingsResponse;
+import com.community.amkorea.soccer.dto.api.PlayerResponse;
+import com.community.amkorea.soccer.dto.api.StandingsResponse;
 import com.community.amkorea.soccer.dto.TeamDto;
-import com.community.amkorea.soccer.dto.TopScorerResponse;
+import com.community.amkorea.soccer.dto.api.TeamResponse;
+import com.community.amkorea.soccer.dto.api.TopScorerResponse;
 import com.community.amkorea.soccer.entity.Player;
 import com.community.amkorea.soccer.entity.Team;
 import com.community.amkorea.soccer.enums.League;
@@ -15,7 +17,6 @@ import com.community.amkorea.soccer.repository.TeamRepository;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-import java.util.Map;
 import java.util.Objects;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -57,18 +58,14 @@ public class SoccerService {
 
     List<String> allTeam = teamRepository.findByAllId();
 
-    List<Map<String, Object>> teamInfo = soccerApi.getApiInfo("get_teams", code, key);
-
-    teamInfo.forEach(t -> {
-      Map<String, Object> venueMap = (Map<String, Object>) t.get("venue");
-      List<Map<String, Object>> coachesList = (List<Map<String, Object>>) t.get("coaches");
-
+    List<TeamResponse> responses = soccerApi.getApiTeam("get_teams", code, key);
+    responses.forEach(e -> {
       TeamDto teamDto = TeamDto.builder()
-          .teamId(t.get("team_key").toString())
-          .name(t.get("team_name").toString())
-          .country(t.get("team_country").toString())
-          .venue(venueMap.get("venue_name").toString())
-          .coach(coachesList.get(0).get("coach_name").toString())
+          .teamId(e.getTeamId())
+          .name(e.getName())
+          .country(e.getCountry())
+          .venue(e.getVenueInfos().getName())
+          .coach(e.getCoachInfos().get(0).getName())
           .build();
 
       Team team = teamDto.toEntity();
@@ -82,26 +79,21 @@ public class SoccerService {
   }
 
   public void getPlayerData(int code) {
+    List<Player> players = new ArrayList<>();
     List<String> allPlayer = playerRepository.findByAllId();
 
-    List<Map<String, Object>> teamInfo = soccerApi.getApiInfo("get_teams", code, key);
+    List<PlayerResponse> responses = soccerApi.getApiInfoPlayer("get_teams", code, key);
+    responses.forEach(p -> {
+      Team team = getTeamName(p.getName());
 
-    List<Player> players = new ArrayList<>();
-
-    teamInfo.forEach(t -> {
-      List<Map<String, Object>> playerList = (List<Map<String, Object>>) t.get("players");
-
-      String teamName = t.get("team_name").toString();
-      Team team = getTeamName(teamName);
-
-      playerList.forEach(p -> {
+      p.getPlayerInfos().forEach(info -> {
         PlayerDto playerDto = PlayerDto.builder()
-            .playerId(p.get("player_id").toString())
-            .name(p.get("player_name").toString())
-            .age(p.get("player_age").toString())
-            .position(p.get("player_type").toString())
-            .number(p.get("player_number").toString())
-            .teamName(team.getName())
+            .playerId(info.getPlayerId())
+            .name(info.getName())
+            .age(info.getAge())
+            .position(info.getPosition())
+            .number(info.getNumber())
+            .teamName(p.getName())
             .build();
 
         Player player = playerDto.toEntity(team, playerDto.getPlayerId());
@@ -122,26 +114,10 @@ public class SoccerService {
   }
 
   public List<TopScorerResponse> getTop10Scorer(League league) {
-    List<TopScorerResponse> scorerList = new ArrayList<>();
+    List<TopScorerResponse> top10Scorer
+        = soccerApi.getApiScorer("get_topscorers", league.getCode(), key);
 
-    List<Map<String, Object>> top10Scorer
-        = soccerApi.getApiInfo("get_topscorers", league.getCode(), key);
-
-    top10Scorer.stream()
-        .limit(10)
-        .forEach(t -> {
-          TopScorerResponse response = TopScorerResponse.builder()
-              .place(t.get("player_place").toString())
-              .name(t.get("player_name").toString())
-              .teamName(t.get("team_name").toString())
-              .goals(t.get("goals").toString())
-              .assists(t.get("assists").toString())
-              .build();
-
-      scorerList.add(response);
-    });
-
-    return scorerList;
+    return top10Scorer.stream().limit(10).toList();
   }
 
   @Transactional(readOnly = true)
@@ -165,25 +141,7 @@ public class SoccerService {
 
 
   public List<StandingsResponse> getStandings(League league) {
-    List<StandingsResponse> standingList = new ArrayList<>();
-
-    List<Map<String, Object>> standings
-        = soccerApi.getApiInfo("get_standings", league.getCode(), key);
-
-    standings.forEach(t -> {
-          StandingsResponse response = StandingsResponse.builder()
-              .leaguePosition(t.get("overall_league_position").toString())
-              .leagueName(t.get("league_name").toString())
-              .teamName(t.get("team_name").toString())
-              .win(t.get("overall_league_W").toString())
-              .draw(t.get("overall_league_D").toString())
-              .lose(t.get("overall_league_L").toString())
-              .build();
-
-          standingList.add(response);
-        });
-
-    return standingList;
+    return soccerApi.getApiStandings("get_standings", league.getCode(), key);
   }
 
 }

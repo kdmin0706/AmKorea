@@ -15,13 +15,14 @@ public enum ErrorCode {
   PASSWORD_NOT_MATCH(HttpStatus.BAD_REQUEST, "비밀번호가 올바르지 않습니다."),
   INVALID_AUTH_CODE(HttpStatus.BAD_REQUEST, "인증번호가 올바르지 않습니다."),
   EMAIL_NOT_VERITY(HttpStatus.BAD_REQUEST, "이메일 인증이 되지 않았습니다."),
+  EMAIL_HAS_FAIL(HttpStatus.BAD_REQUEST, "이메일 발송이 실패했습니다."),
   WRITE_NOT_YOURSELF(HttpStatus.BAD_REQUEST, "본인이 작성하지 않았습니다."),
   POST_ALREADY_LIKE(HttpStatus.BAD_REQUEST, "현재 게시물은 좋아요가 눌려있습니다."),
   POST_ALREADY_UNLIKE(HttpStatus.BAD_REQUEST, "현재 게시물은 좋아요 상태가 아닙니다."),
   COMMENT_ALREADY_LIKE(HttpStatus.BAD_REQUEST, "현재 댓글은 좋아요가 눌려있습니다."),
   COMMENT_ALREADY_UNLIKE(HttpStatus.BAD_REQUEST, "현재 댓글은 좋아요 상태가 아닙니다."),
   PLAYER_NOT_TEAM(HttpStatus.BAD_REQUEST, "해당 팀에 소속되어 있지 않은 선수입니다."),
-  LEAGUE_PARAM_NOT_MATCH(HttpStatus.BAD_REQUEST, "리그 정보가 알맞지 않습니다."),
+  REQUEST_PARAM_NOT_MATCH(HttpStatus.BAD_REQUEST, "요청 파라미터가 알맞지 않습니다"),
   ALREADY_REGISTERED(HttpStatus.BAD_REQUEST, "이미 등록되어있습니다."),
 
   /**

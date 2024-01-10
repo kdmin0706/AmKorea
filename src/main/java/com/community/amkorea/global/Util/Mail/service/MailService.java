@@ -4,7 +4,6 @@ import static com.community.amkorea.global.exception.ErrorCode.EMAIL_NOT_FOUND;
 import static com.community.amkorea.global.exception.ErrorCode.INVALID_AUTH_CODE;
 import static com.community.amkorea.global.exception.ErrorCode.USER_NOT_FOUND;
 
-import com.community.amkorea.global.Util.Mail.dto.SendMailResponse;
 import com.community.amkorea.global.exception.CustomException;
 import com.community.amkorea.global.exception.ErrorCode;
 import com.community.amkorea.global.service.RedisService;
@@ -15,8 +14,10 @@ import jakarta.mail.internet.MimeMessage;
 import java.util.Random;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.mail.MailException;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.MimeMessageHelper;
+import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -35,7 +36,8 @@ public class MailService {
 
   private static final String EMAIL_PREFIX = "Email-Auth: ";
 
-  public SendMailResponse sendAuthMail(String email) {
+  @Async("mailExecutor")
+  public void sendAuthMail(String email) {
     String code = createRandomCode();
 
     MimeMessage mimeMessage = javaMailSender.createMimeMessage();
@@ -43,7 +45,7 @@ public class MailService {
 
     try {
       mimeMessageHelper.setTo(email); // 메일 수신자
-      mimeMessageHelper.setSubject("회원가입 이메일 인증코드입니다."); // 메일 제목
+      mimeMessageHelper.setSubject("AmKorea 회원가입 인증코드입니다."); // 메일 제목
 
       String msgCode = "<div style='margin:20px;'>"
           + "<h1> 안녕하세요 'AmKorea' 입니다. </h1>"
@@ -57,7 +59,7 @@ public class MailService {
           + "<div style='font-size:130%'>"
           + "CODE : <strong>" + code + "</strong><div><br/> "
           + "</div>";
-      
+
       mimeMessageHelper.setText(msgCode, true); // 메일 본문 내용, HTML 여부
 
     } catch (MessagingException e) {
@@ -65,14 +67,13 @@ public class MailService {
       throw new CustomException(ErrorCode.INTERNAL_SERVER_ERROR);
     }
 
-    javaMailSender.send(mimeMessage);
-
-    redisService.setDataExpire(EMAIL_PREFIX + email, code, EMAIL_TOKEN_EXPIRATION);
-
-    return SendMailResponse.builder()
-        .email(email)
-        .code(code)
-        .build();
+    try {
+      javaMailSender.send(mimeMessage);
+      redisService.setDataExpire(EMAIL_PREFIX + email, code, EMAIL_TOKEN_EXPIRATION);
+    } catch (MailException e) {
+      log.error("Error sending email", e);
+      throw new CustomException(ErrorCode.EMAIL_HAS_FAIL);
+    }
   }
 
   @Transactional

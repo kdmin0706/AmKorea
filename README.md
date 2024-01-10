@@ -5,8 +5,10 @@
 <img src="https://img.shields.io/badge/java-007396?style=for-the-badge&logo=java&logoColor=white"></a> 
 <img src="https://img.shields.io/badge/spring-6DB33F?style=for-the-badge&logo=spring&logoColor=white"></a> 
 <img src="https://img.shields.io/badge/mysql-4479A1?style=for-the-badge&logo=mysql&logoColor=white"> </a>
+<br>
 <img src="https://img.shields.io/badge/git-F05032?style=for-the-badge&logo=git&logoColor=white"></a>
 <img src="https://img.shields.io/badge/Redis-DC382D?style=for-the-badge&logo=redis&logoColor=white"/></a>
+<img src="https://img.shields.io/badge/amazons3-569A31?style=for-the-badge&logo=amazons3&logoColor=white"/></a>
 
 ## ERD
 ![ERD](doc/img/erd.png)
@@ -48,7 +50,7 @@
 - 게시글 작성 기능
 	- 로그인한 사용자는 권한에 관계 없이 글을 작성할 수 있다.
 	- 사용자는 `제목(텍스트)`, `게시글 내용(텍스트)`, `사진` 을 이용하여 게시할 수 있다.
-	- 그림 이미지 파일은 AWS s3 에 저장하고 관리한다.
+	- 그림 이미지 파일은 `AWS S3` 에 저장하고 관리한다.
     - 게시글 내용은 최대 300자 이내로 작성한다.
  
 
@@ -120,10 +122,10 @@
     - 검색한 데이터는 DB에 저장하여 북마크 관련 데이터 사용 시에 활용한다.
   
     1. 축구 선수 검색
-   	 	* `팀 이름`, `선수 이름` 을 검색해서 특정 선수의 정보를 조회할 수 있다.
+   	 	* `팀 아이디`, `선수 아이디` 을 검색해서 특정 선수의 정보를 조회할 수 있다.
         *  `선수 이름`, `선수나이`, `포지션`, `등번호` 이 조회된다.
 	2. 축구 팀 검색
-       * `팀 이름` 을 검색해서 특정 팀 정보를 조회할 수 있다.
+       * `팀 아이디` 을 검색해서 특정 팀 정보를 조회할 수 있다.
        * `팀 이름`, `국가`, `구장 이름`, `감독 이름` 이 조회된다.
     3. 득점 순위 검색
        * `리그 아이디` 를 검색하면 해당 리그의 `득점 순위 10위`까지 조회할 수 있다.

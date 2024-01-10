@@ -1,8 +1,6 @@
 package com.community.amkorea.soccer.enums;
 
-import static com.community.amkorea.global.exception.ErrorCode.LEAGUE_PARAM_NOT_MATCH;
-
-import com.community.amkorea.global.exception.CustomException;
+import java.util.Arrays;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 
@@ -19,16 +17,9 @@ public enum League {
   private final int code;
 
   public static League create(String requestLeague) {
-    if (requestLeague == null) {
-      throw new CustomException(LEAGUE_PARAM_NOT_MATCH);
-    }
-
-    for (League value : League.values()) {
-      if (value.toString().equals(requestLeague)) {
-        return value;
-      }
-    }
-
-    throw new CustomException(LEAGUE_PARAM_NOT_MATCH);
+    return Arrays.stream(League.values())
+        .filter(v -> v.toString().equals(requestLeague))
+        .findAny()
+        .orElse(null);
   }
 }
